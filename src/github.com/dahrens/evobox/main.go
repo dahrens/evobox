@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"time"
 	"strconv"
-	"log"
 	"strings"
 )
 
@@ -91,32 +90,29 @@ func (env *Environment) Pause(c *gin.Context) {
 	env.Clock = time.NewTicker(env.Speed)
 }
 
-func (env *Environment) SortCreatures(c *gin.Context) {
-	column_id := c.Request.Form.Get("order[0][column]")
+func (env *Environment) listCreaturesParseRequest(c *gin.Context) (int, int, int, string, string) {
+	c.Request.ParseForm()
+	draw, _ := strconv.Atoi(c.Request.Form.Get("draw"))
+    start, _ := strconv.Atoi(c.Request.Form.Get("start"))
+    length, _ := strconv.Atoi(c.Request.Form.Get("length"))
+    column_id := c.Request.Form.Get("order[0][column]")
 	direction := c.Request.Form.Get("order[0][dir]")
 	param_parts := make([]string, 3)
 	param_parts = append(param_parts, "columns[" ,column_id, "][data]")
 	param := strings.Join(param_parts, "")
 	column := c.Request.Form.Get(param)
-	env.Creatures.Sort(column, direction)
-}
-
-func (env *Environment) ListCreatures(c *gin.Context) {
-	result := make(map[string]interface{})
-
-	c.Request.ParseForm()
-	env.SortCreatures(c)
-
-	draw, err := strconv.Atoi(c.Request.Form.Get("draw"))
-    start, err := strconv.Atoi(c.Request.Form.Get("start"))
-    length, err := strconv.Atoi(c.Request.Form.Get("length"))
-    if err != nil { log.Println(err)}
-
 	end := start + length
 	if end > len(env.Creatures) {
 		end = len(env.Creatures)
 	}
+	return draw, start, end, column, direction
+}
 
+func (env *Environment) ListCreatures(c *gin.Context) {
+	draw, start, end, column, direction := env.listCreaturesParseRequest(c)
+	env.Creatures.Sort(column, direction)
+
+	result := make(map[string]interface{})
 	result["data"] = env.Creatures.ToMap(start, end)
 	result["status"] = 200
 	result["recordsTotal"] = len(env.Creatures)
@@ -126,7 +122,6 @@ func (env *Environment) ListCreatures(c *gin.Context) {
 }
 
 func main() {
-
 	env := NewEnvironment()
 	env.Init()
 
@@ -135,8 +130,7 @@ func main() {
 
 	r.GET("/creatures", env.ListCreatures)
 	r.GET("/index", func(c *gin.Context) {
-		obj := gin.H{"title": "Main website"}
-		c.HTML(200, "index.tpl", obj)
+		c.HTML(200, "index.tpl", nil)
 	})
 	r.GET("/pause", env.Pause)
 	r.GET("/start", env.Start)
