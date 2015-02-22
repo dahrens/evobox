@@ -6,6 +6,7 @@ import (
 	"time"
 	"strconv"
 	"strings"
+	"math/rand"
 )
 
 type Environment struct {
@@ -14,6 +15,7 @@ type Environment struct {
 	Clock     *time.Ticker
 	Tick      int
 	Speed	  time.Duration
+	Rand *rand.Rand
 }
 
 func NewEnvironment() *Environment {
@@ -23,6 +25,7 @@ func NewEnvironment() *Environment {
 	e.Clock = time.NewTicker(time.Second)
 	e.Tick = 0
 	e.Speed = time.Second
+	e.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 	return e
 }
 
@@ -33,7 +36,7 @@ func (env *Environment) Init() {
 
 func (env *Environment) SpawnMany(n int, gender evo.Gender) {
 	for i := 0; i < n; i++ {
-		e := evo.NewCreature(0, 0, float32(i + 10), gender)
+		e := evo.NewCreature(env.Rand.Intn(100), env.Rand.Intn(100), float32(i + 10), gender, env.Rand)
 		env.Spawn(e)
 	}
 }

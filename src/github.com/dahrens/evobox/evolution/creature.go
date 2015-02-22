@@ -1,6 +1,7 @@
 package evolution
 
 import "github.com/Pallinder/go-randomdata"
+import "math/rand"
 
 type Gender string
 
@@ -22,9 +23,10 @@ type Creature struct {
 	hunger_max float32
 	libido_max float32
 	alive      bool
+	rand       *rand.Rand
 }
 
-func NewCreature(x, y int, health float32, gender Gender) *Creature {
+func NewCreature(x, y int, health float32, gender Gender, r *rand.Rand) *Creature {
 	c := new(Creature)
 	// Fragment values
 	c.x = x
@@ -41,6 +43,7 @@ func NewCreature(x, y int, health float32, gender Gender) *Creature {
 	c.hunger_max = 10.0
 	c.libido_max = 10.0
 	c.alive = false
+	c.rand = r
 	return c
 }
 
@@ -51,6 +54,7 @@ func (self *Creature) Evolve() {
 		self.calculateLibido()
 		self.calculateHunger()
 		self.calculateHealth()
+		self.move()
 		if self.Health == 0 {
 			break
 		}
@@ -96,4 +100,18 @@ func (self *Creature) Pulse() chan int {
 
 func (self *Creature) Alive() bool {
 	return self.alive
+}
+
+func (self *Creature) move() {
+	coin := self.rand.Intn(4)
+	switch coin {
+	case 0:
+		self.x--
+	case 1:
+		self.x++
+	case 2:
+		self.y--
+	case 3:
+		self.y++
+	}
 }
