@@ -51,27 +51,23 @@ func (env *Environment) Spawn(e evo.Evolver) {
 func (env *Environment) Run() {
 	for range env.Clock.C {
 		env.Tick++
-		delete_me := make([]int,0)
 		for i, e := range env.Evolvers {
 			if e.Alive() {
 				e.Pulse() <- env.Tick
 			} else {
-				delete_me = append(delete_me, i)
+				env.RemoveEvolver(i)
 			}
-		}
-		for i := range delete_me {
-			env.RemoveEvolver(i)
 		}
 	}
 }
 
 func (env *Environment) RemoveEvolver(i int) {
-	go env.RemoveRelated(env.Evolvers[i])
+	go env.removeRelated(env.Evolvers[i])
 	env.Evolvers[i] = nil // or the zero value of T
 	env.Evolvers = append(env.Evolvers[:i], env.Evolvers[i+1:]...)
 }
 
-func (env *Environment) RemoveRelated(e evo.Evolver) {
+func (env *Environment) removeRelated(e evo.Evolver) {
 	switch o := e.(type) {
 	case *evo.Creature:
 		var i int
