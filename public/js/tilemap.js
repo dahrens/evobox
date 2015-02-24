@@ -8,7 +8,7 @@ function Tilemap(width, height) {
   this.tilesWidth = width;
   this.tilesHeight = height;
 
-  this.tileSize = 16;
+  this.tileSize = 32;
   this.zoom = 0.5;
   this.scale.x = this.scale.y = this.zoom;
 

@@ -35,6 +35,15 @@ func (c Creatures) Sort(column, direction string) {
 	}
 }
 
+func (c Creatures) Contains(creature *Creature) bool {
+	for _, b := range c {
+		if b == creature {
+			return true
+		}
+	}
+	return false
+}
+
 func (c Creatures) ToMap(start, end int) []interface{} {
 	data := make([]interface{}, end-start)
 	if start < len(c) {

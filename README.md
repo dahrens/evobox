@@ -1,4 +1,6 @@
 README
 ======
 
-Map heavily inspired by https://github.com/castled/Tilemap
+This is just a playground for golang using gin, jquery, boostrap and pixi.js
+
+Map copied and modified based on https://github.com/castled/Tilemap

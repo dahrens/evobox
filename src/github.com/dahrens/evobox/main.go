@@ -11,18 +11,18 @@ import (
 )
 
 type Environment struct {
-	Evolvers  []evo.Evolver
-	Creatures evo.Creatures
-	Clock     *time.Ticker
-	Tick      int
-	Speed	  time.Duration
-	Rand *rand.Rand
+	World 	 *evo.World
+	Evolvers []evo.Evolver
+	Clock    *time.Ticker
+	Tick     int
+	Speed	 time.Duration
+	Rand     *rand.Rand
 }
 
 func NewEnvironment() *Environment {
 	env := new(Environment)
+	env.World = evo.NewWorld(32,32)
 	env.Evolvers = make([]evo.Evolver, 0)
-	env.Creatures = make(evo.Creatures, 0)
 	env.Clock = time.NewTicker(time.Second)
 	env.Tick = 0
 	env.Speed = time.Second
@@ -31,6 +31,7 @@ func NewEnvironment() *Environment {
 }
 
 func (env *Environment) Init() {
+	go env.World.Run()
 	go env.SpawnMany(15, evo.GENDER_MALE)
 	go env.SpawnMany(15, evo.GENDER_FEMALE)
 }
@@ -47,7 +48,7 @@ func (env *Environment) Spawn(e evo.Evolver) {
 	env.Evolvers = append(env.Evolvers, e)
 	switch obj := e.(type) {
 	case *evo.Creature:
-		env.Creatures = append(env.Creatures, obj)
+		env.World.PutCreature(obj)
 	}
 }
 
@@ -69,25 +70,25 @@ func (env *Environment) Run() {
 }
 
 func (env *Environment) RemoveEvolver(i int) {
-	env.removeRelated(env.Evolvers[i])
+	//env.removeRelated(env.Evolvers[i])
 	env.Evolvers[i] = nil // or the zero value of T
 	env.Evolvers = append(env.Evolvers[:i], env.Evolvers[i+1:]...)
 }
 
-func (env *Environment) removeRelated(e evo.Evolver) {
-	switch o := e.(type) {
-	case *evo.Creature:
-		var i int
-		var c *evo.Creature
-		for i, c = range env.Creatures {
-			if c == o {
-				break
-			}
-		}
-		env.Creatures[i] = nil // or the zero value of T
-		env.Creatures = append(env.Creatures[:i], env.Creatures[i+1:]...)
-	}
-}
+// func (env *Environment) removeRelated(e evo.Evolver) {
+// 	switch o := e.(type) {
+// 	case *evo.Creature:
+// 		var i int
+// 		var c *evo.Creature
+// 		for i, c = range env.Creatures {
+// 			if c == o {
+// 				break
+// 			}
+// 		}
+// 		env.Creatures[i] = nil // or the zero value of T
+// 		env.Creatures = append(env.Creatures[:i], env.Creatures[i+1:]...)
+// 	}
+// }
 
 func (env *Environment) Start(c *gin.Context) {
 	go env.Run()
@@ -100,7 +101,6 @@ func (env *Environment) Pause(c *gin.Context) {
 
 func (env *Environment) Reset(c *gin.Context) {
 	env.Evolvers = make([]evo.Evolver, 0)
-	env.Creatures = make(evo.Creatures, 0)
 	env.Tick = 0
 	env.Init()
 }
@@ -117,21 +117,21 @@ func (env *Environment) listCreaturesParseRequest(c *gin.Context) (int, int, int
 	param := strings.Join(param_parts, "")
 	column := c.Request.Form.Get(param)
 	end := start + length
-	if end > len(env.Creatures) {
-		end = len(env.Creatures)
+	if end > len(env.World.Creatures) {
+		end = len(env.World.Creatures)
 	}
 	return draw, start, end, column, direction
 }
 
 func (env *Environment) ListCreatures(c *gin.Context) {
 	draw, start, end, column, direction := env.listCreaturesParseRequest(c)
-	env.Creatures.Sort(column, direction)
+	env.World.Creatures.Sort(column, direction)
 
 	result := make(map[string]interface{})
-	result["data"] = env.Creatures.ToMap(start, end)
+	result["data"] = env.World.Creatures.ToMap(start, end)
 	result["status"] = 200
-	result["recordsTotal"] = len(env.Creatures)
-	result["recordsFiltered"] = len(env.Creatures)
+	result["recordsTotal"] = len(env.World.Creatures)
+	result["recordsFiltered"] = len(env.World.Creatures)
 	result["draw"] = draw
 	c.JSON(200, result)
 }
