@@ -1,0 +1,644 @@
+{"frames": {
+
+"Buildings/House.png":
+{
+	"frame": {"x":467,"y":2,"w":173,"h":120},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":10,"y":3,"w":173,"h":120},
+	"sourceSize": {"w":192,"h":128}
+},
+"Buildings/Storage.png":
+{
+	"frame": {"x":292,"y":2,"w":173,"h":125},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":10,"y":3,"w":173,"h":125},
+	"sourceSize": {"w":192,"h":128}
+},
+"Buildings/Tower.png":
+{
+	"frame": {"x":642,"y":2,"w":32,"h":90},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":5,"w":32,"h":90},
+	"sourceSize": {"w":32,"h":96}
+},
+"Buildings/Wall.png":
+{
+	"frame": {"x":710,"y":2,"w":30,"h":50},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":13,"w":30,"h":50},
+	"sourceSize": {"w":32,"h":64}
+},
+"Clutter/Barrel.png":
+{
+	"frame": {"x":617,"y":185,"w":16,"h":19},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":19},
+	"sourceSize": {"w":16,"h":19}
+},
+"Clutter/flower1.png":
+{
+	"frame": {"x":426,"y":200,"w":6,"h":8},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":0,"w":6,"h":8},
+	"sourceSize": {"w":8,"h":8}
+},
+"Clutter/flower2.png":
+{
+	"frame": {"x":658,"y":190,"w":5,"h":8},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":0,"w":5,"h":8},
+	"sourceSize": {"w":8,"h":8}
+},
+"Clutter/lilypad1.png":
+{
+	"frame": {"x":533,"y":195,"w":11,"h":12},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":1,"w":11,"h":12},
+	"sourceSize": {"w":16,"h":16}
+},
+"Clutter/lilypad2.png":
+{
+	"frame": {"x":759,"y":172,"w":12,"h":11},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":3,"w":12,"h":11},
+	"sourceSize": {"w":16,"h":16}
+},
+"Clutter/pebble1.png":
+{
+	"frame": {"x":444,"y":191,"w":7,"h":6},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":2,"w":7,"h":6},
+	"sourceSize": {"w":8,"h":8}
+},
+"Clutter/pebble2.png":
+{
+	"frame": {"x":763,"y":140,"w":8,"h":6},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":8,"h":6},
+	"sourceSize": {"w":8,"h":8}
+},
+"Entities/Characters/Bunny.png":
+{
+	"frame": {"x":744,"y":140,"w":17,"h":15},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":8,"y":16,"w":17,"h":15},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Characters/Deer.png":
+{
+	"frame": {"x":637,"y":128,"w":30,"h":27},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":3,"w":30,"h":27},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Characters/Human.png":
+{
+	"frame": {"x":453,"y":166,"w":13,"h":31},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":1,"w":13,"h":31},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Characters/Orc.png":
+{
+	"frame": {"x":635,"y":158,"w":13,"h":31},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":1,"w":13,"h":31},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Armor/Png/BarkArmor.png":
+{
+	"frame": {"x":665,"y":187,"w":13,"h":22},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":10,"w":13,"h":22},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Armor/Png/ChainMail.png":
+{
+	"frame": {"x":715,"y":156,"w":14,"h":21},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":11,"w":14,"h":21},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Armor/Png/FarmerVest.png":
+{
+	"frame": {"x":680,"y":187,"w":13,"h":22},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":10,"w":13,"h":22},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Armor/Png/LeatherArmor.png":
+{
+	"frame": {"x":708,"y":181,"w":14,"h":21},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":11,"w":14,"h":21},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Armor/Png/MinerVest.png":
+{
+	"frame": {"x":743,"y":157,"w":14,"h":21},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":10,"y":11,"w":14,"h":21},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Armor/Png/PlateMail.png":
+{
+	"frame": {"x":724,"y":179,"w":14,"h":21},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":11,"w":14,"h":21},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Helmet/Png/MiningCap.png":
+{
+	"frame": {"x":748,"y":180,"w":9,"h":7},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":1,"w":9,"h":7},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Helmet/Png/SteelHelm.png":
+{
+	"frame": {"x":533,"y":182,"w":15,"h":11},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":0,"w":15,"h":11},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Helmet/Png/SteelHelm2.png":
+{
+	"frame": {"x":449,"y":129,"w":16,"h":11},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":0,"w":16,"h":11},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Helmet/Png/StrawHat.png":
+{
+	"frame": {"x":410,"y":200,"w":14,"h":8},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":9,"y":0,"w":14,"h":8},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Helmet/Png/ironHelm.png":
+{
+	"frame": {"x":748,"y":189,"w":11,"h":11},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":10,"y":0,"w":11,"h":11},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Tools & Weapons/Png/Claymore.png":
+{
+	"frame": {"x":701,"y":129,"w":7,"h":24},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":20,"y":0,"w":7,"h":24},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Tools & Weapons/Png/Dagger.png":
+{
+	"frame": {"x":767,"y":75,"w":4,"h":8},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":22,"y":9,"w":4,"h":8},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Tools & Weapons/Png/HandAxe.png":
+{
+	"frame": {"x":700,"y":157,"w":13,"h":22},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":19,"y":4,"w":13,"h":22},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Tools & Weapons/Png/PickAxe.png":
+{
+	"frame": {"x":731,"y":156,"w":10,"h":16},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":21,"y":5,"w":10,"h":16},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Tools & Weapons/Png/PitchFork.png":
+{
+	"frame": {"x":572,"y":180,"w":16,"h":29},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":16,"y":3,"w":16,"h":29},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Tools & Weapons/Png/ShortSword.png":
+{
+	"frame": {"x":759,"y":157,"w":12,"h":13},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":20,"y":8,"w":12,"h":13},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Tools & Weapons/Png/Spear.png":
+{
+	"frame": {"x":650,"y":157,"w":13,"h":31},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":15,"y":0,"w":13,"h":31},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Equipment/Tools & Weapons/Png/sabre.png":
+{
+	"frame": {"x":740,"y":180,"w":6,"h":20},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":20,"y":1,"w":6,"h":20},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Rocks/BaseRock.png":
+{
+	"frame": {"x":676,"y":101,"w":32,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":3,"w":32,"h":26},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Trees/Tree1.png":
+{
+	"frame": {"x":676,"y":2,"w":32,"h":63},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":1,"w":32,"h":63},
+	"sourceSize": {"w":32,"h":64}
+},
+"Entities/Trees/Tree2.png":
+{
+	"frame": {"x":292,"y":129,"w":57,"h":62},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":1,"w":57,"h":62},
+	"sourceSize": {"w":64,"h":64}
+},
+"Entities/Trees/cactus.png":
+{
+	"frame": {"x":744,"y":75,"w":21,"h":32},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":0,"w":21,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"Entities/Trees/stump.png":
+{
+	"frame": {"x":635,"y":191,"w":21,"h":11},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":19,"w":21,"h":11},
+	"sourceSize": {"w":32,"h":32}
+},
+"Planter og Farm stuff/wheat1.png":
+{
+	"frame": {"x":642,"y":94,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"Planter og Farm stuff/wheat2.png":
+{
+	"frame": {"x":351,"y":147,"w":32,"h":42},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":42},
+	"sourceSize": {"w":32,"h":42}
+},
+"Planter og Farm stuff/wheat3.png":
+{
+	"frame": {"x":385,"y":147,"w":32,"h":42},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":42},
+	"sourceSize": {"w":32,"h":42}
+},
+"Planter og Farm stuff/wheat4.png":
+{
+	"frame": {"x":419,"y":147,"w":32,"h":42},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":42},
+	"sourceSize": {"w":32,"h":42}
+},
+"Tiles/Cliff/Cliff1.png":
+{
+	"frame": {"x":410,"y":191,"w":32,"h":7},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":7},
+	"sourceSize": {"w":32,"h":32}
+},
+"Tiles/darkGrass1.png":
+{
+	"frame": {"x":676,"y":67,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"Tiles/dirt1.png":
+{
+	"frame": {"x":710,"y":54,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"Tiles/grass1.png":
+{
+	"frame": {"x":710,"y":88,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"Tiles/road1.png":
+{
+	"frame": {"x":710,"y":122,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"Tiles/sand1.png":
+{
+	"frame": {"x":467,"y":124,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"Tiles/soil1.png":
+{
+	"frame": {"x":501,"y":124,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"Tiles/water1.png":
+{
+	"frame": {"x":535,"y":124,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"Tiles/water2.png":
+{
+	"frame": {"x":569,"y":124,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"Tiles/water3.png":
+{
+	"frame": {"x":603,"y":124,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Bar.png":
+{
+	"frame": {"x":637,"y":124,"w":1,"h":1},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1,"h":1},
+	"sourceSize": {"w":1,"h":1}
+},
+"UI/BuildingIcon.png":
+{
+	"frame": {"x":742,"y":2,"w":29,"h":25},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":3,"w":29,"h":25},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/CharacterInventory.png":
+{
+	"frame": {"x":2,"y":2,"w":288,"h":207},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":21,"w":288,"h":207},
+	"sourceSize": {"w":288,"h":228}
+},
+"UI/EquipmentIcon.png":
+{
+	"frame": {"x":522,"y":158,"w":26,"h":22},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":5,"w":26,"h":22},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/HealthBar.png":
+{
+	"frame": {"x":292,"y":193,"w":96,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":96,"h":16},
+	"sourceSize": {"w":96,"h":16}
+},
+"UI/HungerBar.png":
+{
+	"frame": {"x":351,"y":129,"w":96,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":96,"h":16},
+	"sourceSize": {"w":96,"h":16}
+},
+"UI/Icons/ClaymoreIcon.png":
+{
+	"frame": {"x":608,"y":185,"w":7,"h":24},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":13,"y":3,"w":7,"h":24},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/DaggerIcon.png":
+{
+	"frame": {"x":453,"y":142,"w":12,"h":22},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":10,"y":4,"w":12,"h":22},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/HandAxeIcon.png":
+{
+	"frame": {"x":665,"y":157,"w":14,"h":28},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":2,"w":14,"h":28},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/MiningCapIcon.png":
+{
+	"frame": {"x":468,"y":187,"w":28,"h":22},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":5,"w":28,"h":22},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/PickAxeIcon.png":
+{
+	"frame": {"x":681,"y":153,"w":17,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":10,"y":3,"w":17,"h":26},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/PitchForkIcon.png":
+{
+	"frame": {"x":590,"y":179,"w":16,"h":28},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":9,"y":2,"w":16,"h":28},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/ShortSwordIcon.png":
+{
+	"frame": {"x":390,"y":191,"w":18,"h":18},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":8,"y":6,"w":18,"h":18},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/SpearIcon.png":
+{
+	"frame": {"x":695,"y":181,"w":11,"h":28},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":12,"y":2,"w":11,"h":28},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/SteelHelm2Icon.png":
+{
+	"frame": {"x":550,"y":158,"w":28,"h":20},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":6,"w":28,"h":20},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/SteelHelmIcon.png":
+{
+	"frame": {"x":669,"y":129,"w":30,"h":22},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":4,"w":30,"h":22},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/StrawHatIcon.png":
+{
+	"frame": {"x":742,"y":29,"w":29,"h":16},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":8,"w":29,"h":16},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/flower1.png":
+{
+	"frame": {"x":744,"y":109,"w":20,"h":29},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":8,"y":1,"w":20,"h":29},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/flower2.png":
+{
+	"frame": {"x":550,"y":180,"w":20,"h":29},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":8,"y":1,"w":20,"h":29},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/ironHelmIcon.png":
+{
+	"frame": {"x":744,"y":47,"w":27,"h":26},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":3,"w":27,"h":26},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/ironOre.png":
+{
+	"frame": {"x":498,"y":185,"w":22,"h":20},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":7,"w":22,"h":20},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/lilypad.png":
+{
+	"frame": {"x":468,"y":158,"w":25,"h":27},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":2,"w":25,"h":27},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/lumber.png":
+{
+	"frame": {"x":610,"y":158,"w":23,"h":25},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":3,"w":23,"h":25},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/sabreIcon.png":
+{
+	"frame": {"x":522,"y":182,"w":9,"h":27},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":2,"w":9,"h":27},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/Icons/stone.png":
+{
+	"frame": {"x":495,"y":158,"w":25,"h":25},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":3,"w":25,"h":25},
+	"sourceSize": {"w":32,"h":32}
+},
+"UI/refinedMatIcon.png":
+{
+	"frame": {"x":580,"y":158,"w":28,"h":19},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":11,"w":28,"h":19},
+	"sourceSize": {"w":32,"h":32}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "sprites.png",
+	"format": "RGBA8888",
+	"size": {"w":773,"h":211},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:cf54bb200bc7f34dd3822ed4ce1877d3:63fe7078200e4fabd9f44de87c5efdcc:1eabdf11f75e3a4fe3147baf7b5be24b$"
+}
+}

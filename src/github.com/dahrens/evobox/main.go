@@ -3,6 +3,7 @@ package main
 import (
 	evo "github.com/dahrens/evobox/evolution"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/contrib/static"
 	"time"
 	"strconv"
 	"strings"
@@ -30,13 +31,13 @@ func NewEnvironment() *Environment {
 }
 
 func (env *Environment) Init() {
-	go env.SpawnMany(100, evo.GENDER_MALE)
-	go env.SpawnMany(100, evo.GENDER_FEMALE)
+	go env.SpawnMany(15, evo.GENDER_MALE)
+	go env.SpawnMany(15, evo.GENDER_FEMALE)
 }
 
 func (env *Environment) SpawnMany(n int, gender evo.Gender) {
 	for i := 0; i < n; i++ {
-		e := evo.NewCreature(env.Rand.Intn(100), env.Rand.Intn(100), float32(i + 10), gender, env.Rand)
+		e := evo.NewCreature(env.Rand.Intn(32), env.Rand.Intn(32), float32(i + 10), gender, env.Rand)
 		env.Spawn(e)
 	}
 }
@@ -53,18 +54,22 @@ func (env *Environment) Spawn(e evo.Evolver) {
 func (env *Environment) Run() {
 	for range env.Clock.C {
 		env.Tick++
-		for i, e := range env.Evolvers {
+		t := make([]evo.Evolver, len(env.Evolvers), cap(env.Evolvers))
+		copy(t, env.Evolvers)
+		removed := 0
+		for i, e := range t {
 			if e.Alive() {
 				e.Pulse() <- env.Tick
 			} else {
-				env.RemoveEvolver(i)
+				env.RemoveEvolver(i-removed)
+				removed++
 			}
 		}
 	}
 }
 
 func (env *Environment) RemoveEvolver(i int) {
-	go env.removeRelated(env.Evolvers[i])
+	env.removeRelated(env.Evolvers[i])
 	env.Evolvers[i] = nil // or the zero value of T
 	env.Evolvers = append(env.Evolvers[:i], env.Evolvers[i+1:]...)
 }
@@ -129,14 +134,12 @@ func main() {
 	env.Init()
 
 	r := gin.Default()
-	r.LoadHTMLGlob("templates/*")
 
 	r.GET("/creatures", env.ListCreatures)
-	r.GET("/index", func(c *gin.Context) {
-		c.HTML(200, "index.tpl", nil)
-	})
 	r.GET("/pause", env.Pause)
 	r.GET("/start", env.Start)
+
+	r.Use(static.Serve("/", static.LocalFile("public", false)))
 
 	// Listen and server on 0.0.0.0:8080
 	r.Run(":8080")
