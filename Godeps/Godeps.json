@@ -1,0 +1,23 @@
+{
+	"ImportPath": "github.com/dahrens/evobox",
+	"GoVersion": "go1.4.2",
+	"Deps": [
+		{
+			"ImportPath": "github.com/Pallinder/go-randomdata",
+			"Rev": "55c29ede9091f464856a6ba074f841b8397fe8a4"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/contrib/static",
+			"Rev": "abe0864daff8a2ca3cc41809a7bd01bd1d52bd5c"
+		},
+		{
+			"ImportPath": "github.com/gin-gonic/gin",
+			"Comment": "v0.5",
+			"Rev": "50e7e427300a7eeeb299a4cd5bc1ebfa04d48528"
+		},
+		{
+			"ImportPath": "github.com/julienschmidt/httprouter",
+			"Rev": "bde5c16eb82ff15a1734a3818d9b9547065f65b1"
+		}
+	]
+}
