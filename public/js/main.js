@@ -82,6 +82,10 @@ $(document).ready( function () {
             }
         })
 
+        $('#reset').click(function() {
+            $.ajax({url: '/reset'});
+        })
+
         stage.addChild(tilemap);
 
         menu = new Menu();

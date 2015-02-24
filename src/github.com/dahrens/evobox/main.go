@@ -20,14 +20,14 @@ type Environment struct {
 }
 
 func NewEnvironment() *Environment {
-	e := new(Environment)
-	e.Evolvers = make([]evo.Evolver, 0)
-	e.Creatures = make(evo.Creatures, 0)
-	e.Clock = time.NewTicker(time.Second)
-	e.Tick = 0
-	e.Speed = time.Second
-	e.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-	return e
+	env := new(Environment)
+	env.Evolvers = make([]evo.Evolver, 0)
+	env.Creatures = make(evo.Creatures, 0)
+	env.Clock = time.NewTicker(time.Second)
+	env.Tick = 0
+	env.Speed = time.Second
+	env.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+	return env
 }
 
 func (env *Environment) Init() {
@@ -98,6 +98,13 @@ func (env *Environment) Pause(c *gin.Context) {
 	env.Clock = time.NewTicker(env.Speed)
 }
 
+func (env *Environment) Reset(c *gin.Context) {
+	env.Evolvers = make([]evo.Evolver, 0)
+	env.Creatures = make(evo.Creatures, 0)
+	env.Tick = 0
+	env.Init()
+}
+
 func (env *Environment) listCreaturesParseRequest(c *gin.Context) (int, int, int, string, string) {
 	c.Request.ParseForm()
 	draw, _ := strconv.Atoi(c.Request.Form.Get("draw"))
@@ -138,6 +145,7 @@ func main() {
 	r.GET("/creatures", env.ListCreatures)
 	r.GET("/pause", env.Pause)
 	r.GET("/start", env.Start)
+	r.GET("/reset", env.Reset)
 
 	r.Use(static.Serve("/", static.LocalFile("public", false)))
 
