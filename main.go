@@ -44,7 +44,7 @@ func (env *Environment) SpawnMany(n int, gender evo.Gender) {
 }
 
 func (env *Environment) Spawn(e evo.Evolver) {
-	go e.Evolve()
+	go e.Evolve(env.World.Requests)
 	env.Evolvers = append(env.Evolvers, e)
 	switch obj := e.(type) {
 	case *evo.Creature:
@@ -70,25 +70,9 @@ func (env *Environment) Run() {
 }
 
 func (env *Environment) RemoveEvolver(i int) {
-	//env.removeRelated(env.Evolvers[i])
-	env.Evolvers[i] = nil // or the zero value of T
+	env.Evolvers[i] = nil
 	env.Evolvers = append(env.Evolvers[:i], env.Evolvers[i+1:]...)
 }
-
-// func (env *Environment) removeRelated(e evo.Evolver) {
-// 	switch o := e.(type) {
-// 	case *evo.Creature:
-// 		var i int
-// 		var c *evo.Creature
-// 		for i, c = range env.Creatures {
-// 			if c == o {
-// 				break
-// 			}
-// 		}
-// 		env.Creatures[i] = nil // or the zero value of T
-// 		env.Creatures = append(env.Creatures[:i], env.Creatures[i+1:]...)
-// 	}
-// }
 
 func (env *Environment) Start(c *gin.Context) {
 	go env.Run()
@@ -101,6 +85,7 @@ func (env *Environment) Pause(c *gin.Context) {
 
 func (env *Environment) Reset(c *gin.Context) {
 	env.Evolvers = make([]evo.Evolver, 0)
+	env.World = evo.NewWorld(32,32)
 	env.Tick = 0
 	env.Init()
 }

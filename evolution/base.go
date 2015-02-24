@@ -3,7 +3,9 @@ package evolution
 type Evolver interface {
 	X() int
 	Y() int
-	Evolve()
+	SetX(int)
+	SetY(int)
+	Evolve(worldRequests chan WorldChanger)
 	Pulse() chan int
 	Alive() bool
 }

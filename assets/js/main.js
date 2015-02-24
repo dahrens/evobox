@@ -83,7 +83,13 @@ $(document).ready( function () {
         })
 
         $('#reset').click(function() {
-            $.ajax({url: '/reset'});
+            $.ajax({
+                url: '/reset',
+                success: function() {
+                    table.ajax.reload();
+                }
+            })
+
         })
 
         stage.addChild(tilemap);
