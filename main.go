@@ -147,7 +147,7 @@ func main() {
 	r.GET("/start", env.Start)
 	r.GET("/reset", env.Reset)
 
-	r.Use(static.Serve("/", static.LocalFile("public", false)))
+	r.Use(static.Serve("/", static.LocalFile("src/assets", false)))
 
 	// Listen and server on 0.0.0.0:8080
 	r.Run(":8080")
