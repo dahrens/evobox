@@ -18,16 +18,17 @@ const (
 
 type Creature struct {
 	Fragment
-	Name       string
-	Health     float32
-	Hunger     float32
-	Libido     float32
-	Sanity     float32
-	Gender     Gender
-	hunger_max float32
-	libido_max float32
-	alive      bool
-	rand       *rand.Rand
+	Name          string
+	Health        float32
+	Hunger        float32
+	Libido        float32
+	Sanity        float32
+	Gender        Gender
+	hunger_max    float32
+	libido_max    float32
+	alive         bool
+	rand          *rand.Rand
+	worldRequests chan Requester
 }
 
 func NewCreature(x, y int, health float32, gender Gender, r *rand.Rand) *Creature {
@@ -51,20 +52,22 @@ func NewCreature(x, y int, health float32, gender Gender, r *rand.Rand) *Creatur
 	return c
 }
 
-func (self *Creature) Evolve(worldRequests chan WorldChanger) {
+func (self *Creature) Evolve(worldRequests chan Requester) {
 	self.alive = true
+	self.worldRequests = worldRequests
 	for tick := range self.pulse {
 		self.Age = tick
 		self.calculateLibido()
 		self.calculateHunger()
 		self.calculateHealth()
-		self.move(worldRequests)
+		self.move()
 		if self.Health == 0 {
 			break
 		}
 	}
 	self.alive = false
 	worldRequests <- &DeleteRequest{Request{obj: self}}
+	self.worldRequests = nil
 }
 
 func (self *Creature) calculateHunger() {
@@ -115,7 +118,7 @@ func (self *Creature) Alive() bool {
 	return self.alive
 }
 
-func (self *Creature) move(worldRequests chan WorldChanger) {
+func (self *Creature) move() {
 	coin := self.rand.Intn(4)
 	newX := self.x
 	newY := self.y
@@ -129,11 +132,11 @@ func (self *Creature) move(worldRequests chan WorldChanger) {
 	case 3:
 		newY++
 	}
-	req := new(PutRequest)
+	req := new(PostRequest)
 	req.obj = self
 	req.x = newX
 	req.y = newY
-	worldRequests <- req
+	self.worldRequests <- req
 }
 
 type Creatures []*Creature

@@ -5,7 +5,7 @@ type Evolver interface {
 	Y() int
 	SetX(int)
 	SetY(int)
-	Evolve(worldRequests chan WorldChanger)
+	Evolve(worldRequests chan Requester)
 	Pulse() chan int
 	Alive() bool
 }
@@ -24,4 +24,15 @@ type Fragment struct {
 type Plant struct {
 	Fragment
 	NutritionalValue float32
+}
+
+type Evolvers []Evolver
+
+func (evo Evolvers) Contains(e Evolver) bool {
+	for _, b := range evo {
+		if b == e {
+			return true
+		}
+	}
+	return false
 }
