@@ -25,15 +25,17 @@ The map was copied and modified from https://github.com/castled/Tilemap
 install
 =======
 
-:code:`go get github.com/dahrens/evobox`
+```
+go get github.com/dahrens/evobox
+```
 
 usage
 =====
 
 Make sure that you run the binary from within a folder where the assets are available.
 
-.. code-block:: golang
-
-	go install github.com/dahrens/evobox
-	cd $GOPATH/src/github/dahrens/evobox
-	evobox
+```
+go install github.com/dahrens/evobox
+cd $GOPATH/src/github/dahrens/evobox
+evobox
+```
