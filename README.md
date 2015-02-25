@@ -2,16 +2,16 @@ evobox
 ======
 
 This is just a playground for golang - learning concurrent concepts by implementing a
-world where everything participant runs in its own goroutine...
+world where every participant runs in its own goroutine...
 
 dependencies
 ============
 
 The backend if driven by gin, the golang dependencies are covered by Godeps...
 
-* github.com/gin-gonic/gin
-* github.com/gin-gonic/contrib/static
-* github.com/Pallinder/go-randomdata
+* https://github.com/gin-gonic/gin
+* https://github.com/gin-gonic/contrib/static
+* https://github.com/Pallinder/go-randomdata
 
 The Frontend uses several js and css libs, which get loaded using cdn's
 
