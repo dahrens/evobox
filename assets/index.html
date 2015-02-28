@@ -4,12 +4,6 @@
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.css">
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
-
-    <style type="text/css">
-        .dataTables_paginate {
-            float: left !important;
-        }
-    </style>
     <!-- jQuery -->
     <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
     <!-- DataTables -->
@@ -18,31 +12,32 @@
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 
     <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/pixi.js/2.2.5/pixi.js"></script>
+    <script src="js/websocket_store.js"></script>
     <script src="js/tilemap.js"></script>
     <script src="js/map_menu.js"></script>
     <script src="js/main.js"></script>
 </head>
 <body>
-    <div style="float: left">
-    <table id="evolvers" class="display" cellspacing="0" width="800px">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Gender</th>
-                <th>Age</th>
-                <th>Health</th>
-                <th>Libido</th>
-                <th>Hunger</th>
-                <th>X</th>
-                <th>Y</th>
-            </tr>
-        </thead>
-    </table>
-    </div>
+    <div style="float: left;" id="tilemap"></div>
     <div style="padding: 50px; float: left;">
         <input id="player" type="checkbox" checked data-toggle="toggle" data-on="<i class='fa fa-play'></i> Play" data-off="<i class='fa fa-pause'></i> Pause"><br />
         <button class="btn btn-danger" type="reset" id="reset">Reset</button>
     </div>
-    <p style="padding:50px; float: left;" id="demo"></p>
+    <div id="information" style="float: right;">
+        <table id="creatures" class="display" cellspacing="0" width="800px">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Age</th>
+                    <th>Health</th>
+                    <th>Libido</th>
+                    <th>Hunger</th>
+                    <th>X</th>
+                    <th>Y</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
 </body>
 </html>

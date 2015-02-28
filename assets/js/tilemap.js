@@ -14,7 +14,7 @@ function Tilemap(width, height) {
 
   this.startLocation = { x: 0, y: 0 };
 
-  this.creature_tiles = []
+  this.creature_tiles = new Map()
 
   // fill the map with tiles
   this.generateMap();
@@ -85,21 +85,34 @@ Tilemap.prototype.addCreature = function(creature) {
   var tile = PIXI.Sprite.fromFrame("Entities/Characters/Bunny.png");
   tile.position.x = creature.X * this.tileSize;
   tile.position.y = creature.Y * this.tileSize;
-  this.creature_tiles.push({"creature": creature, "tile": tile})
+  this.creature_tiles.set(creature.Id, tile)
   this.addChild(tile);
 }
 
+Tilemap.prototype.updateCreature = function(creature) {
+  tile = this.creature_tiles.get(creature.Id)
+  tile.position.x = creature.X * this.tileSize
+  tile.position.y = creature.Y * this.tileSize
+  this.creature_tiles.set(creature.Id, tile)
+}
+
+Tilemap.prototype.removeAllCreatures = function() {
+  this.removeChildren()
+  this.generateMap()
+  this.creature_tiles = new Map()
+}
+
+Tilemap.prototype.removeCreature = function(creature) {
+  this.removeCreatureTile(this.creature_tiles.get(creature.Id));
+}
+
 Tilemap.prototype.removeCreatureTile = function(creature_tile) {
-  this.removeChild(creature_tile.tile);
+  console.log("remove creature on tilemap");
+  console.log(creature_tile)
+  console.log(this.removeChild(creature_tile));
 }
 
 Tilemap.prototype.loadCreatures = function(creatures) {
-  var i = this.creature_tiles.length;
-  while (i--) {
-    creature_tile = this.creature_tiles[i];
-    this.removeCreatureTile(creature_tile);
-    this.creature_tiles.splice(i, 1);
-  }
   for (var i=0; i<creatures.length; i++) {
     this.addCreature(creatures[i]);
   }

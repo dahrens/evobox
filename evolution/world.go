@@ -2,7 +2,6 @@ package evolution
 
 import (
 	"log"
-	"math/rand"
 	"time"
 )
 
@@ -13,15 +12,15 @@ type Requester interface {
 }
 
 type World struct {
-	W, H      int
-	Evolvers  Evolvers
+	W         int
+	H         int
+	Evolvers  Evolvers `json:"-"`
 	Creatures Creatures
-	Map       []Creatures
-	Requests  chan Requester
-	Clock     *time.Ticker
+	Map       []Creatures `json:"-"`
+	Requests  chan Requester `json:"-"`
+	Clock     *time.Ticker `json:"-"`
 	Tick      int
 	Speed     time.Duration
-	Rand      *rand.Rand
 }
 
 func NewWorld(w, h int) *World {
@@ -35,17 +34,11 @@ func NewWorld(w, h int) *World {
 		world.Map[x] = make(Creatures, h)
 	}
 	world.Requests = make(chan Requester)
-	world.Clock = time.NewTicker(time.Second)
+	world.Speed = 400 * time.Millisecond
+	world.Clock = time.NewTicker(world.Speed)
 	world.Tick = 0
-	world.Speed = time.Second
-	world.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 	go world.serve()
 	return world
-}
-
-func (world *World) Init() {
-	world.SpawnMany(15, GENDER_MALE)
-	world.SpawnMany(15, GENDER_FEMALE)
 }
 
 func (world *World) Run() {
@@ -55,10 +48,6 @@ func (world *World) Run() {
 func (world *World) Pause() {
 	world.Clock.Stop()
 	world.Clock = time.NewTicker(world.Speed)
-}
-
-func (world *World) Reset() {
-
 }
 
 func (world *World) serve() {
@@ -78,22 +67,6 @@ func (world *World) pulse() {
 				e.Pulse() <- world.Tick
 			}
 		}
-	}
-}
-
-func (world *World) SpawnMany(n int, gender Gender) {
-	for i := 0; i < n; i++ {
-		e := NewCreature(world.Rand.Intn(32), world.Rand.Intn(32), float32(i+10), gender, world.Rand)
-		world.Spawn(e)
-	}
-}
-
-func (world *World) Spawn(e Evolver) {
-	go e.Evolve(world.Requests)
-	switch obj := e.(type) {
-	case *Creature:
-		r := NewPutRequest(obj)
-		world.Requests <- r
 	}
 }
 
@@ -127,8 +100,8 @@ func (world *World) handlePut(req *PutRequest) {
 	switch o := req.Obj().(type) {
 	case *Creature:
 		world.Creatures = append(world.Creatures, o)
-		world.Map[o.X()][o.Y()] = o
-		go o.Evolve(world.Requests)
+		world.Map[o.GetX()][o.GetY()] = o
+		go o.Evolve(world)
 	}
 }
 
@@ -143,8 +116,8 @@ func (world *World) handlePost(req *PostRequest) {
 		}
 		o.SetX(req.X())
 		o.SetY(req.Y())
-		world.Map[o.X()][o.Y()] = o
-		world.Map[o.X()][o.Y()] = nil
+		world.Map[o.GetX()][o.GetY()] = o
+		world.Map[o.GetX()][o.GetY()] = nil
 	}
 }
 
@@ -160,7 +133,7 @@ func (world *World) handleDelete(req *DeleteRequest) {
 	world.Evolvers = append(world.Evolvers[:i], world.Evolvers[i+1:]...)
 	switch o := req.Obj().(type) {
 	case *Creature:
-		world.Map[o.X()][o.Y()] = nil
+		world.Map[o.GetX()][o.GetY()] = nil
 		world.removeCreature(o)
 	}
 }
@@ -192,8 +165,8 @@ func NewPutRequest(obj Evolver) *PutRequest {
 }
 
 func (p PutRequest) Obj() Evolver { return p.obj }
-func (p PutRequest) X() int       { return p.obj.X() }
-func (p PutRequest) Y() int       { return p.obj.Y() }
+func (p PutRequest) X() int       { return p.obj.GetX() }
+func (p PutRequest) Y() int       { return p.obj.GetY() }
 
 type PostRequest struct {
 	Request
@@ -223,5 +196,5 @@ func NewDeleteRequest(obj Evolver, x, y int) *DeleteRequest {
 }
 
 func (p DeleteRequest) Obj() Evolver { return p.obj }
-func (p DeleteRequest) X() int       { return p.obj.X() }
-func (p DeleteRequest) Y() int       { return p.obj.Y() }
+func (p DeleteRequest) X() int       { return p.obj.GetX() }
+func (p DeleteRequest) Y() int       { return p.obj.GetY() }

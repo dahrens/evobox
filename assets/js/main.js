@@ -10,8 +10,11 @@ var menuBarWidth = 120;
 var table = null;
 
 var assets_loaded = false;
+var server = null;
 
 $(document).ready( function () {
+
+    evo = new Evobox();
 
     function Main(tilesPath, w, h){
         // For zoomed-in pixel art, we want crisp pixels instead of fuzziness
@@ -38,15 +41,29 @@ $(document).ready( function () {
 
     function onLoaded() {
         assets_loaded = true
+
         // create tilemap
         tilemap = new Tilemap(32, 32);
         tilemap.position.x = menuBarWidth;
 
         tilemap.zoomIn();
 
-        table = $('#evolvers').DataTable({
-            "serverSide": true,
-            "ajax": "/creatures",
+        $('#tilemap').on("creatures-loaded", function(event, creatures) {
+            creatures.forEach(function(v, k, m){
+                tilemap.addCreature(v);
+            });
+        });
+
+        $('#tilemap').on("creature-update", function(event, creature) {
+            tilemap.updateCreature(creature);
+        });
+
+        $('#tilemap').on("creature-delete", function(event, creature) {
+            console.log("delete requested");
+            tilemap.removeCreature(creature);
+        });
+
+        table = $('#creatures').DataTable({
             "searching": false,
             "aLengthMenu": [[30, 100, 500], [30, 100, 500]],
             "columns": [
@@ -61,34 +78,40 @@ $(document).ready( function () {
             ]
         });
 
-        table.on( 'xhr', function ( e, settings, json ) {
-          tilemap.loadCreatures(json.data)
+        table.on("creatures-loaded", function(event, creatures) {
+            table.clear();
+            creatures.forEach(function(v,k,m){
+                table.row.add(v);
+            })
+            table.draw();
         });
 
-        function intervalTrigger() {
-            return window.setInterval( function() {
-                table.ajax.reload();
-            }, 500 );
-        };
-        var id;
+        table.on("creature-update", function(event, creature) {
+            table.row('#' + creature.DT_RowId).data(creature).draw();
+        });
+
+        table.on("creature-delete", function(event, creature) {
+            table.row('#' + creature.DT_RowId).remove().draw();
+        });
 
         $('#player').change(function() {
             if ($(this).prop('checked')) {
-                $.ajax({url: '/pause'});
-                window.clearInterval(id);
+                evo.Pause()
             } else {
-                $.ajax({url: '/start'});
-                id = intervalTrigger();
+                evo.Start()
             }
         })
 
         $('#reset').click(function() {
-            $.ajax({
-                url: '/reset',
-                success: function() {
-                    table.ajax.reload();
-                }
-            })
+            // broken
+            evo.Reset()
+            // $.ajax({
+            //     url: '/reset',
+            //     success: function() {
+            //         Evobox.Init()
+            //         $('#player').bootstrapToggle('on')
+            //     }
+            // })
 
         })
 
@@ -106,7 +129,6 @@ $(document).ready( function () {
         renderer.render(stage);
     }
 
-
-    $("#demo").append(Main("", 640, 520));
+    $("#tilemap").append(Main("", 800, 520));
 
 });
