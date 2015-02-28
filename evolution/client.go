@@ -97,8 +97,8 @@ func (c *Client) listenRead() {
 			} else {
 				if action, ok := msg["action"]; ok {
 					switch action {
-					case "listCreatures":
-						websocket.JSON.Send(c.Conn, NewMessage("loadCreatures", c.World.Creatures))
+					case "connect":
+						websocket.JSON.Send(c.Conn, NewMessage("connect", c.World))
 					case "Start":
 						c.World.Run()
 					case "Pause":
@@ -121,8 +121,8 @@ func (c *Client) Write(msg *Message) {
 }
 
 func (client *Client) Init() {
-	client.SpawnMany(10, GENDER_MALE)
-	client.SpawnMany(10, GENDER_FEMALE)
+	client.SpawnMany(15, GENDER_MALE)
+	client.SpawnMany(15, GENDER_FEMALE)
 }
 
 func (client *Client) SpawnMany(n int, gender Gender) {

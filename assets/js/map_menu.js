@@ -1,7 +1,7 @@
 Menu.prototype = new PIXI.DisplayObjectContainer();
 Menu.prototype.constructor = Menu;
 
-function Menu(){
+function Menu(tilemap){
   PIXI.DisplayObjectContainer.call(this);
   this.interactive = true;
 
