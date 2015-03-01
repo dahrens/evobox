@@ -1,9 +1,12 @@
 Tilemap.prototype = new PIXI.DisplayObjectContainer();
 Tilemap.prototype.constructor = Tilemap;
 
-function Tilemap(width, height) {
+function Tilemap(width, height, renderWidth, renderHeight) {
   PIXI.DisplayObjectContainer.call(this);
   this.interactive = true;
+
+  this.renderWidth = renderWidth;
+  this.renderHeight = renderHeight;
 
   this.tilesWidth = width;
   this.tilesHeight = height;
@@ -27,7 +30,7 @@ function Tilemap(width, height) {
   this.addChild(this.mouseoverGraphics);
 
   this.mousedown = this.touchstart = function(data) {
-    if(data.getLocalPosition(this.parent).x > menuBarWidth) {
+    if(data.getLocalPosition(this.parent).x > 0) {
       this.dragging = true;
       this.mousePressPoint[0] = data.getLocalPosition(this.parent).x - this.position.x;
       this.mousePressPoint[1] = data.getLocalPosition(this.parent).y - this.position.y;
@@ -106,7 +109,6 @@ Tilemap.prototype.generateMap = function() {
 
 Tilemap.prototype.selectTile = function(x, y) {
   this.selectedTileCoords = [x, y];
-  menu.selectedTileText.setText("Selected Tile: " + this.selectedTileCoords);
   this.selectedGraphics.clear();
   this.selectedGraphics.lineStyle(2, 0xFFFF00, 1);
   this.selectedGraphics.beginFill(0x000000, 0);
@@ -136,17 +138,17 @@ Tilemap.prototype.zoomOut = function(){
 }
 
 Tilemap.prototype.centerOnSelectedTile = function() {
-  this.position.x = (renderWidth - menuBarWidth) / 2 -
+  this.position.x = this.renderWidth / 2 -
     this.selectedTileCoords[0] * this.zoom * this.tileSize -
-    this.tileSize * this.zoom / 2 + menuBarWidth;
-  this.position.y = renderHeight / 2 -
+    this.tileSize * this.zoom / 2;
+    this.position.y = this.renderHeight / 2 -
     this.selectedTileCoords[1] * this.zoom * this.tileSize -
     this.tileSize * this.zoom / 2;
 }
 
 Tilemap.prototype.constrainTilemap = function() {
-  this.position.x = Math.max(this.position.x, -1 * this.tileSize * this.tilesWidth * this.zoom + renderWidth);
-  this.position.x = Math.min(this.position.x, menuBarWidth);
-  this.position.y = Math.max(this.position.y, -1 * this.tileSize * this.tilesHeight * this.zoom + renderHeight);
+  this.position.x = Math.max(this.position.x, -1 * this.tileSize * this.tilesWidth * this.zoom + this.renderWidth);
+  this.position.x = Math.min(this.position.x, 0);
+  this.position.y = Math.max(this.position.y, -1 * this.tileSize * this.tilesHeight * this.zoom + this.renderHeight);
   this.position.y = Math.min(this.position.y, 0);
 }

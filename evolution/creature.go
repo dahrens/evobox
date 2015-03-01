@@ -32,8 +32,8 @@ type Creature struct {
 func NewCreature(health float32, gender Gender, client *Client) *Creature {
 	c := new(Creature)
 	// Fragment values
-	c.X = client.Rand.Intn(32)
-	c.Y = client.Rand.Intn(32)
+	c.X = client.Rand.Intn(client.World.W)
+	c.Y = client.Rand.Intn(client.World.H)
 	c.Birth = client.World.Tick
 	c.Age = 0
 	c.pulse = make(chan int)

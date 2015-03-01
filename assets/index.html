@@ -4,24 +4,28 @@
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.css">
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- jQuery -->
     <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
     <!-- DataTables -->
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.js"></script>
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
 
     <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/pixi.js/2.2.5/pixi.js"></script>
     <script src="js/evobox.js"></script>
     <script src="js/world.js"></script>
     <script src="js/tilemap.js"></script>
-    <script src="js/map_menu.js"></script>
     <script src="js/launch.js"></script>
 </head>
 <body>
     <div style="float: left;" id="tilemap"></div>
-    <div style="padding: 50px; float: left;">
-        <input id="player" type="checkbox" checked data-toggle="toggle" data-on="<i class='fa fa-play'></i> Play" data-off="<i class='fa fa-pause'></i> Pause"><br />
+    <div class="btn-group-vertical" role="group" style="padding: 50px; float: left;">
+        <input id="player" type="checkbox" checked data-toggle="toggle" data-on="<i class='fa fa-play'></i> Play" data-off="<i class='fa fa-pause'></i> Pause">
+        <div class="btn-group-horizontal" role="group">
+            <button id="zoomin" class="btn btn-primary"><span class="glyphicon glyphicon-zoom-in"></span></button>
+            <button id="zoomout" class="btn btn-primary"><span class="glyphicon glyphicon-zoom-out"></span></button>
+        </div>
         <button class="btn btn-danger" type="reset" id="reset">Reset</button>
     </div>
     <div id="information" style="float: right;">

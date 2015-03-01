@@ -52,7 +52,12 @@ Evobox.prototype = {
 	                self.start()
 	            }
 	        });
-
+			$('#zoomin').click(function() {
+				self.world.tilemap.zoomIn();
+			});
+			$('#zoomout').click(function() {
+				self.world.tilemap.zoomOut();
+			});
 	        $('#reset').click(function() {
 	            self.reset()
 	        });

@@ -4,8 +4,6 @@ function World(renderer_width, renderer_height) {
 	this.stage = null
 	this.renderer = null
 	this.tilemap = null
-	this.menu = null
-	this.menuBarWidth = 120;
 	this.table = null
 	this.creatures = new Map()
 	this.raw_world = null
@@ -46,15 +44,13 @@ World.prototype = {
 		world.initTable()
 
 		world.stage.addChild(world.tilemap);
-		world.menu = new Menu(world.tilemap);
-		world.stage.addChild(world.menu);
 		world.loadCreatures()
 		// begin drawing
 		world.animate();
     },
     initTilemap: function() {
-		this.tilemap = new Tilemap(this.tile_width, this.tile_height);
-		this.tilemap.position.x = this.menuBarWidth;
+		this.tilemap = new Tilemap(this.tile_width, this.tile_height, this.renderer_width, this.renderer_height);
+		this.tilemap.position.x = 0;
 		this.tilemap.zoomIn();
 	},
 	initTable: function() {
