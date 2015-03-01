@@ -34,6 +34,7 @@ func NewCreature(health float32, gender Gender, client *Client) *Creature {
 	// Fragment values
 	c.X = client.Rand.Intn(32)
 	c.Y = client.Rand.Intn(32)
+	c.Birth = client.World.Tick
 	c.Age = 0
 	c.pulse = make(chan int)
 	// Creature values
@@ -55,7 +56,7 @@ func (self *Creature) Evolve(world *World) {
 	self.alive = true
 	self.world = world
 	for tick := range self.pulse {
-		self.Age = tick
+		self.Age = tick - self.Birth
 		self.calculateLibido()
 		self.calculateHunger()
 		self.calculateHealth()

@@ -10,6 +10,7 @@ type Position struct {
 type Fragment struct {
 	Position
 	Age   int
+	Birth int
 	pulse chan int
 }
 

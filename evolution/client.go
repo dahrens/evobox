@@ -125,8 +125,8 @@ func (c *Client) Write(msg *Message) {
 }
 
 func (client *Client) Init() {
-	client.SpawnMany(15, GENDER_MALE)
-	client.SpawnMany(15, GENDER_FEMALE)
+	client.SpawnMany(10, GENDER_MALE)
+	client.SpawnMany(10, GENDER_FEMALE)
 }
 
 func (client *Client) SpawnMany(n int, gender Gender) {
