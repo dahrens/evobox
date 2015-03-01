@@ -61,6 +61,13 @@ Evobox.prototype = {
 	        $('#reset').click(function() {
 	            self.reset()
 	        });
+	        $('#tilemap').on('mousewheel', function(event) {
+				if (event.deltaY === -1) {
+					self.world.tilemap.zoomOut();
+				} else {
+					self.world.tilemap.zoomIn();
+				}
+			});
 	        this.initialized = true
 		} else {
 			this.world.reload(raw_world);

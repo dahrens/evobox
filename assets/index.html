@@ -3,13 +3,26 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.css">
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <style>
+    .navbar {
+        margin-bottom: 0 !important
+    }
+    .navbar-nav-bottom {
+        float:none;
+        margin: 0 auto;
+        display: table;
+        table-layout: fixed;
+    }
+    </style>
     <!-- jQuery -->
     <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="js/jquery.mousewheel.min.js"></script>
     <!-- DataTables -->
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+    <script type="text/javascript" charset="utf8" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
 
     <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/pixi.js/2.2.5/pixi.js"></script>
@@ -19,30 +32,49 @@
     <script src="js/launch.js"></script>
 </head>
 <body>
-    <div style="float: left;" id="tilemap"></div>
-    <div class="btn-group-vertical" role="group" style="padding: 50px; float: left;">
-        <input id="player" type="checkbox" checked data-toggle="toggle" data-on="<i class='fa fa-play'></i> Play" data-off="<i class='fa fa-pause'></i> Pause">
-        <div class="btn-group-horizontal" role="group">
-            <button id="zoomin" class="btn btn-primary"><span class="glyphicon glyphicon-zoom-in"></span></button>
-            <button id="zoomout" class="btn btn-primary"><span class="glyphicon glyphicon-zoom-out"></span></button>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                </button>
+                <a class="navbar-brand" href="#">Evobox</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown mega-dropdown">
+                        <a href="#" class="dropdown-toggle" role="button" aria-expanded="false">Creatures<span class="caret"></span></a>
+                        <div id="information" class="dropdown-menu mega-dropdown-menu" role="menu">
+                            <table id="creatures" class="display" cellspacing="0" width="800px">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Gender</th>
+                                        <th>Age</th>
+                                        <th>Health</th>
+                                        <th>Libido</th>
+                                        <th>Hunger</th>
+                                        <th>X</th>
+                                        <th>Y</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        <div>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div id="tilemap"></div>
+
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="nav navbar-nav navbar-nav-bottom btn-group controls" role="group">
+            <input id="player" type="checkbox" checked data-toggle="toggle" data-on="<i class='fa fa-play'></i> Play" data-off="<i class='fa fa-pause'></i> Pause">
+            <button id="zoomin" class="btn btn-primary navbar-btn"><span class="glyphicon glyphicon-zoom-in"></span> Zoom In</button>
+            <button id="zoomout" class="btn btn-primary navbar-btn"><span class="glyphicon glyphicon-zoom-out"></span> Zoom Out</button>
+            <button class="btn btn-danger navbar-btn" type="reset" id="reset">Reset</button>
         </div>
-        <button class="btn btn-danger" type="reset" id="reset">Reset</button>
-    </div>
-    <div id="information" style="float: right;">
-        <table id="creatures" class="display" cellspacing="0" width="800px">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Gender</th>
-                    <th>Age</th>
-                    <th>Health</th>
-                    <th>Libido</th>
-                    <th>Hunger</th>
-                    <th>X</th>
-                    <th>Y</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
+    </nav>
 </body>
 </html>

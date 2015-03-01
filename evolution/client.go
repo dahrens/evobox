@@ -38,7 +38,7 @@ func NewClient(ws *websocket.Conn, server *Server) *Client {
 	c.doneCh = make(chan bool)
 	c.AutoInc = NewAutoInc(0, 1)
 	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-	c.World = NewWorld(32, 32)
+	c.World = NewWorld(64, 64)
 	c.server = server
 	c.Conn = ws
 	return c

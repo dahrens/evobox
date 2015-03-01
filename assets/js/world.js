@@ -1,6 +1,6 @@
 function World(renderer_width, renderer_height) {
-	this.renderer_width = renderer_width || 800
-	this.renderer_height = renderer_height || 600
+	this.renderer_width = renderer_width || $("#tilemap").width()
+	this.renderer_height = renderer_height || $(document).height() - 100;
 	this.stage = null
 	this.renderer = null
 	this.tilemap = null
@@ -55,6 +55,7 @@ World.prototype = {
 	},
 	initTable: function() {
 		this.table = $('#creatures').DataTable({
+			"searching": false,
 			"aLengthMenu": [[30, 100, 500], [30, 100, 500]],
 			"columns": [
 				{ "data": "Name" },
