@@ -98,11 +98,15 @@ func (c *Client) listenRead() {
 				if action, ok := msg["action"]; ok {
 					switch action {
 					case "connect":
-						websocket.JSON.Send(c.Conn, NewMessage("connect", c.World))
+						websocket.JSON.Send(c.Conn, NewMessage("load-world", c.World))
 					case "Start":
 						c.World.Run()
 					case "Pause":
 						c.World.Pause()
+					case "Reset":
+						c.World.Reset()
+						c.Init()
+						websocket.JSON.Send(c.Conn, NewMessage("load-world", c.World))
 					}
 				}
 			}

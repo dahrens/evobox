@@ -6,6 +6,7 @@ function Evobox() {
 	this.server.onmessage = this.onMessage
 	this.server.onclose = this.onClose
 	this.world = new World()
+	this.initialized = false
 };
 
 Evobox.prototype = {
@@ -20,8 +21,8 @@ Evobox.prototype = {
 		try {
 			var msg = JSON.parse(raw_msg.data);
 			switch(msg.action) {
-				case "connect":
-					this.evobox.connected(msg.data)
+				case "load-world":
+					this.evobox.loadWorld(msg.data)
 					break;
 			    case "update":
 					this.evobox.world.updateCreature(msg.data)
@@ -40,20 +41,25 @@ Evobox.prototype = {
 		    console.log(err);
 		}
 	},
-	connected: function(raw_world) {
+	loadWorld: function(raw_world) {
 		var self = this
-		this.world.init(raw_world)
-		$('#player').change(function() {
-            if ($(this).prop('checked')) {
-                self.pause()
-            } else {
-                self.start()
-            }
-        })
+		if (self.initialized === false) {
+			this.world.init(raw_world)
+			$('#player').change(function() {
+	            if ($(this).prop('checked')) {
+	                self.pause()
+	            } else {
+	                self.start()
+	            }
+	        });
 
-        $('#reset').click(function() {
-            self.reset()
-        })
+	        $('#reset').click(function() {
+	            self.reset()
+	        });
+	        this.initialized = true
+		} else {
+			this.world.reload(raw_world);
+		}
 	},
 	start: function() {
 		msg = {"action": "Start"}
@@ -64,6 +70,8 @@ Evobox.prototype = {
 		this.server.send(JSON.stringify(msg));
 	},
 	reset: function() {
-		console.log("not implemented");
+		msg = {"action": "Reset"}
+		this.server.send(JSON.stringify(msg));
+		$('#player').bootstrapToggle('on')
 	}
 }

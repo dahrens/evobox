@@ -72,6 +72,15 @@ World.prototype = {
             ]
         });
     },
+    reload: function(raw_world) {
+		var self = this
+		this.creatures.forEach(function(v, k, m) {
+			self.tilemap.removeChild(v.tile);
+		});
+		this.table.clear().draw();
+		this.raw_world = raw_world
+		this.loadCreatures()
+    },
     loadCreatures: function() {
 		for (var i=0; i<this.raw_world.Creatures.length; i++) {
 			creature = this.raw_world.Creatures[i];
@@ -101,5 +110,5 @@ World.prototype = {
 		creature = this.creatures.get(raw_creature.Id);
 		this.tilemap.removeChild(creature.tile);
 		this.table.row('#' + creature.DT_RowId).remove().draw();
-    }
+    },
 }
