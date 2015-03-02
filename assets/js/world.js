@@ -56,7 +56,7 @@ World.prototype = {
 	initTable: function() {
 		this.table = $('#creatures').DataTable({
 			"searching": false,
-			"aLengthMenu": [[30, 100, 500], [30, 100, 500]],
+			"aLengthMenu": [[10, 30, 50], [30, 30, 50]],
 			"columns": [
 				{ "data": "Name" },
                 { "data": "Gender" },
@@ -82,15 +82,15 @@ World.prototype = {
     loadCreatures: function() {
 		for (var i=0; i<this.raw_world.Creatures.length; i++) {
 			creature = this.raw_world.Creatures[i];
-			creature.DT_RowId = "creature-id-" + creature.Id;
-			creature.tile = PIXI.Sprite.fromFrame("Entities/Characters/Bunny.png");
-			creature.tile.position.x = creature.X * this.tilemap.tileSize;
-			creature.tile.position.y = creature.Y * this.tilemap.tileSize;
 			this.addCreature(creature)
 	    }
     },
 	addCreature: function(creature) {
 		this.creatures.set(creature.Id, creature);
+		creature.DT_RowId = "creature-id-" + creature.Id;
+		creature.tile = PIXI.Sprite.fromFrame("Entities/Characters/Bunny.png");
+		creature.tile.position.x = creature.X * this.tilemap.tileSize;
+		creature.tile.position.y = creature.Y * this.tilemap.tileSize;
 		this.tilemap.addChild(creature.tile);
 		this.table.row.add(creature).draw();
     },

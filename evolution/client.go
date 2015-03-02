@@ -21,7 +21,6 @@ type Client struct {
 	doneCh  chan bool
 }
 
-var maxId int = 0
 var channelBufSize = 1000
 
 // Create new chat client.
@@ -34,10 +33,10 @@ func NewClient(ws *websocket.Conn, server *Server) *Client {
 		panic("server cannot be nil")
 	}
 	c := new(Client)
-	maxId++
 	c.ch = make(chan *Message, channelBufSize)
 	c.doneCh = make(chan bool)
 	c.AutoInc = NewAutoInc(0, 1)
+	c.Id = server.Next.Id()
 	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 	c.World = NewWorld(64, 64)
 	c.server = server
@@ -97,6 +96,8 @@ func (c *Client) listenRead() {
 			} else {
 				if action, ok := msg["action"]; ok {
 					switch action {
+					case "Reset":
+						fallthrough
 					case "connect":
 						settings := msg["settings"].(map[string]interface{})
 						count, _ := strconv.Atoi(settings["initial_creatures"].(string))
@@ -105,20 +106,23 @@ func (c *Client) listenRead() {
 						map_height, _ := strconv.Atoi(settings["map_height"].(string))
 						c.World.Reset(tick_interval, map_width, map_height)
 						c.Init(count)
-						websocket.JSON.Send(c.Conn, NewMessage("load-world", c.World))
+						c.Write(NewMessage("load-world", c.World))
 					case "Start":
 						c.World.Run()
 					case "Pause":
 						c.World.Pause()
-					case "Reset":
-						settings := msg["settings"].(map[string]interface{})
-						count, _ := strconv.Atoi(settings["initial_creatures"].(string))
-						tick_interval, _ := strconv.Atoi(settings["tick_interval"].(string))
-						map_width, _ := strconv.Atoi(settings["map_width"].(string))
-						map_height, _ := strconv.Atoi(settings["map_height"].(string))
-						c.World.Reset(tick_interval, map_width, map_height)
-						c.Init(count)
-						websocket.JSON.Send(c.Conn, NewMessage("load-world", c.World))
+					case "Spawn":
+						coin := c.Rand.Intn(2)
+						var gender Gender
+						switch coin {
+						case 0:
+							gender = GENDER_FEMALE
+						default:
+							gender = GENDER_MALE
+						}
+						e := NewCreature(100.0, gender, c)
+						c.Spawn(e)
+						c.Write(NewMessage("add-creature", e))
 					}
 				}
 			}

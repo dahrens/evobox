@@ -61,14 +61,14 @@ func (self *Creature) Evolve(world *World) {
 		self.calculateHunger()
 		self.calculateHealth()
 		self.move()
-		self.client.Conn.Write(NewMessage("update", self).ToJSON())
+		self.client.Write(NewMessage("update", self))
 		if self.Health == 0 {
 			break
 		}
 	}
 	self.alive = false
 	world.Requests <- &DeleteRequest{Request{obj: self}}
-	self.client.Conn.Write(NewMessage("delete", self).ToJSON())
+	self.client.Write(NewMessage("delete", self))
 	self.world = nil
 }
 

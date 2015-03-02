@@ -95,8 +95,6 @@ Tilemap.prototype.getTile = function(x, y) {
 }
 
 Tilemap.prototype.generateMap = function(plan) {
-  // just grass bg atm...
-  console.log(plan)
   for(var i = 0; i < this.tilesWidth; ++i){
     var currentRow = [];
     for(var j=0; j < this.tilesHeight; j++){

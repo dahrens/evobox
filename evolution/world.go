@@ -71,7 +71,7 @@ func (world *World) Reset(tick_interval, map_width, map_height int) {
 	for x := 0; x < world.W; x++ {
 		world.Map[x] = make(Creatures, world.H)
 	}
-	world.Plan = NewPlan(map_width,world.map_height)
+	world.Plan = NewPlan(map_width,map_height)
 }
 
 func (world *World) serve() {

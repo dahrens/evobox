@@ -37,6 +37,9 @@ Evobox.prototype = {
 			case "delete":
 				this.evobox.world.deleteCreature(msg.data)
 				break;
+			case "add-creature":
+				this.evobox.world.addCreature(msg.data)
+				break;
 			default:
 				console.log("unknown message received:");
 		}
@@ -60,6 +63,9 @@ Evobox.prototype = {
 			});
 	        $('#reset').click(function() {
 	            self.reset()
+	        });
+	        $('#spawn').click(function() {
+	            self.spawn()
 	        });
 	        $('#tilemap').on('mousewheel', function(event) {
 				if (event.deltaY === -1) {
@@ -85,5 +91,9 @@ Evobox.prototype = {
 		msg = {"action": "Reset", "settings": ReadSettings()}
 		this.server.send(JSON.stringify(msg));
 		$('#player').bootstrapToggle('on')
+	},
+	spawn: function() {
+		msg = {"action": "Spawn", "settings": ReadSettings()}
+		this.server.send(JSON.stringify(msg));
 	}
 }

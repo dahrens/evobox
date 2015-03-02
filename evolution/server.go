@@ -13,6 +13,7 @@ type Server struct {
 	delCh    chan *Client
 	doneCh   chan bool
 	ErrCh    chan error
+	Next     *AutoInc
 }
 
 // Create new chat server.
@@ -23,6 +24,7 @@ func NewServer(pattern string) *Server {
 	delCh := make(chan *Client)
 	doneCh := make(chan bool)
 	ErrCh := make(chan error)
+	Next := NewAutoInc(0, 1)
 
 	return &Server{
 		pattern,
@@ -32,6 +34,7 @@ func NewServer(pattern string) *Server {
 		delCh,
 		doneCh,
 		ErrCh,
+		Next,
 	}
 }
 

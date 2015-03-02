@@ -1,7 +1,5 @@
 package evolution
 
-import "encoding/json"
-
 type Position struct {
 	X int
 	Y int
@@ -21,19 +19,11 @@ type Plant struct {
 
 type Message map[string]interface{}
 
-func (self Message) ToJSON() []byte {
-	byteArray, err := json.Marshal(self)
-	if err != nil {
-		panic("unable to create JSON message")
-	}
-	return byteArray
-}
-
-func NewMessage(action string, data interface{}) Message {
+func NewMessage(action string, data interface{}) *Message {
 	m := make(Message)
 	m["data"] = data
 	m["action"] = action
-	return m
+	return &m
 }
 
 type Evolver interface {
