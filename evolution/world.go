@@ -3,6 +3,7 @@ package evolution
 import (
 	"log"
 	"time"
+	"sync"
 )
 
 type Requester interface {
@@ -86,11 +87,14 @@ func (world *World) pulse() {
 		world.Tick++
 		t := make(Evolvers, len(world.Evolvers), cap(world.Evolvers))
 		copy(t, world.Evolvers)
+		var w sync.WaitGroup
+		w.Add(len(t))
 		for _, e := range t {
 			if e.Alive() {
-				e.Pulse() <- world.Tick
+				e.Pulse() <- &Tick{Count: world.Tick, Wait: &w}
 			}
 		}
+		w.Wait()
 	}
 }
 

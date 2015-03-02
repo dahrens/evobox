@@ -36,7 +36,7 @@ func NewCreature(health float32, gender Gender, client *Client) *Creature {
 	c.Y = client.Rand.Intn(client.World.H)
 	c.Birth = client.World.Tick
 	c.Age = 0
-	c.pulse = make(chan int)
+	c.pulse = make(chan *Tick)
 	// Creature values
 	c.Name = randomdata.SillyName()
 	c.Health = health
@@ -56,12 +56,13 @@ func (self *Creature) Evolve(world *World) {
 	self.alive = true
 	self.world = world
 	for tick := range self.pulse {
-		self.Age = tick - self.Birth
+		self.Age = tick.Count - self.Birth
 		self.calculateLibido()
 		self.calculateHunger()
 		self.calculateHealth()
 		self.move()
 		self.client.Write(NewMessage("update", self))
+		tick.Wait.Done()
 		if self.Health == 0 {
 			break
 		}
@@ -112,7 +113,7 @@ func (self *Creature) SetY(y int) {
 	self.Y = y
 }
 
-func (self *Creature) Pulse() chan int {
+func (self *Creature) Pulse() chan *Tick {
 	return self.pulse
 }
 

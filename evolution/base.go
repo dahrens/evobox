@@ -1,5 +1,12 @@
 package evolution
 
+import "sync"
+
+type Tick struct {
+	Count int
+	Wait  *sync.WaitGroup
+}
+
 type Position struct {
 	X int
 	Y int
@@ -9,7 +16,7 @@ type Fragment struct {
 	Position
 	Age   int
 	Birth int
-	pulse chan int
+	pulse chan *Tick
 }
 
 type Plant struct {
@@ -32,7 +39,7 @@ type Evolver interface {
 	SetX(int)
 	SetY(int)
 	Evolve(world *World)
-	Pulse() chan int
+	Pulse() chan *Tick
 	Alive() bool
 }
 
