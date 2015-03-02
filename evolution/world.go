@@ -21,6 +21,7 @@ type World struct {
 	Clock     *time.Ticker `json:"-"`
 	Tick      int
 	Speed     time.Duration
+	Plan      Plan
 	running	  bool
 }
 
@@ -38,6 +39,7 @@ func NewWorld(w, h int) *World {
 	world.Speed = 400 * time.Millisecond
 	world.Clock = time.NewTicker(world.Speed)
 	world.Tick = 0
+	world.Plan = NewPlan(w,h)
 	world.running = false
 	go world.serve()
 	return world
@@ -54,9 +56,14 @@ func (world *World) Pause() {
 	world.Clock = time.NewTicker(world.Speed)
 }
 
-func (world *World) Reset() {
+func (world *World) Reset(tick_interval, map_width, map_height int) {
+	world.Speed = time.Duration(tick_interval) * time.Millisecond
+	world.W = map_width
+	world.H = map_height
 	if world.running {
 		world.Pause()
+	} else {
+		world.Clock = time.NewTicker(world.Speed)
 	}
 	world.Evolvers = make(Evolvers, 0)
 	world.Creatures = make(Creatures, 0)
@@ -64,6 +71,7 @@ func (world *World) Reset() {
 	for x := 0; x < world.W; x++ {
 		world.Map[x] = make(Creatures, world.H)
 	}
+	world.Plan = NewPlan(map_width,world.map_height)
 }
 
 func (world *World) serve() {

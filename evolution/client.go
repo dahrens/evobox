@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -51,7 +52,6 @@ func (client *Client) WebsocketHandler(ws *websocket.Conn) {
 
 // Listen Write and Read request via chanel
 func (c *Client) Listen() {
-	c.Init()
 	go c.listenWrite()
 	c.listenRead()
 }
@@ -98,14 +98,26 @@ func (c *Client) listenRead() {
 				if action, ok := msg["action"]; ok {
 					switch action {
 					case "connect":
+						settings := msg["settings"].(map[string]interface{})
+						count, _ := strconv.Atoi(settings["initial_creatures"].(string))
+						tick_interval, _ := strconv.Atoi(settings["tick_interval"].(string))
+						map_width, _ := strconv.Atoi(settings["map_width"].(string))
+						map_height, _ := strconv.Atoi(settings["map_height"].(string))
+						c.World.Reset(tick_interval, map_width, map_height)
+						c.Init(count)
 						websocket.JSON.Send(c.Conn, NewMessage("load-world", c.World))
 					case "Start":
 						c.World.Run()
 					case "Pause":
 						c.World.Pause()
 					case "Reset":
-						c.World.Reset()
-						c.Init()
+						settings := msg["settings"].(map[string]interface{})
+						count, _ := strconv.Atoi(settings["initial_creatures"].(string))
+						tick_interval, _ := strconv.Atoi(settings["tick_interval"].(string))
+						map_width, _ := strconv.Atoi(settings["map_width"].(string))
+						map_height, _ := strconv.Atoi(settings["map_height"].(string))
+						c.World.Reset(tick_interval, map_width, map_height)
+						c.Init(count)
 						websocket.JSON.Send(c.Conn, NewMessage("load-world", c.World))
 					}
 				}
@@ -124,9 +136,9 @@ func (c *Client) Write(msg *Message) {
 	}
 }
 
-func (client *Client) Init() {
-	client.SpawnMany(10, GENDER_MALE)
-	client.SpawnMany(10, GENDER_FEMALE)
+func (client *Client) Init(initialCreatures int) {
+	client.SpawnMany(initialCreatures/2, GENDER_MALE)
+	client.SpawnMany(initialCreatures/2, GENDER_FEMALE)
 }
 
 func (client *Client) SpawnMany(n int, gender Gender) {

@@ -1,7 +1,7 @@
 Tilemap.prototype = new PIXI.DisplayObjectContainer();
 Tilemap.prototype.constructor = Tilemap;
 
-function Tilemap(width, height, renderWidth, renderHeight) {
+function Tilemap(width, height, renderWidth, renderHeight, plan) {
   PIXI.DisplayObjectContainer.call(this);
   this.interactive = true;
 
@@ -18,7 +18,7 @@ function Tilemap(width, height, renderWidth, renderHeight) {
   this.startLocation = { x: 0, y: 0 };
 
   // fill the map with tiles
-  this.generateMap();
+  this.generateMap(plan);
 
   // variables and functions for moving the map
   this.mouseoverTileCoords = [0, 0];
@@ -72,36 +72,35 @@ function Tilemap(width, height, renderWidth, renderHeight) {
   };
 }
 
-Tilemap.prototype.addTile = function(x, y, terrain) {
-  var tile = PIXI.Sprite.fromFrame("Tiles/grass1.png");
-  tile.position.x = x * this.tileSize;
-  tile.position.y = y * this.tileSize;
-  tile.tileX = x;
-  tile.tileY = y;
-  tile.terrain = terrain;
-  this.addChildAt(tile, x * this.tilesHeight + y);
+Tilemap.prototype.addTile = function(x, y, cell) {
+  for (i = 0; i < cell.Terrains.length; i++) {
+    var tile = PIXI.Sprite.fromFrame(cell.Terrains[i]);
+    tile.position.x = x * this.tileSize;
+    tile.position.y = y * this.tileSize;
+    tile.tileX = x;
+    tile.tileY = y;
+    this.addChild(tile);
+  }
 }
 
-Tilemap.prototype.clear = function() {
+Tilemap.prototype.clear = function(plan) {
+  this.tilesWidth = plan.length;
+  this.tilesHeight = plan[0].length;
   this.removeChildren()
-  this.generateMap()
-}
-
-Tilemap.prototype.changeTile = function(x, y, terrain) {
-  this.removeChild(this.getTile(x, y));
-  this.addTile(x, y, terrain);
+  this.generateMap(plan)
 }
 
 Tilemap.prototype.getTile = function(x, y) {
   return this.getChildAt(x * this.tilesHeight + y);
 }
 
-Tilemap.prototype.generateMap = function() {
+Tilemap.prototype.generateMap = function(plan) {
   // just grass bg atm...
+  console.log(plan)
   for(var i = 0; i < this.tilesWidth; ++i){
     var currentRow = [];
     for(var j=0; j < this.tilesHeight; j++){
-      this.addTile(i, j, 0);
+      this.addTile(i, j, plan[i][j]);
     }
   }
 

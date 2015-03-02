@@ -15,10 +15,16 @@
         display: table;
         table-layout: fixed;
     }
+    #settings {
+        width: 200px;
+    }
+    .setting-label {
+        width: 100px !important;
+    }
     </style>
     <!-- jQuery -->
     <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="js/jquery.mousewheel.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="js/lib/jquery.mousewheel.min.js"></script>
     <!-- DataTables -->
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.js"></script>
@@ -32,7 +38,7 @@
     <script src="js/launch.js"></script>
 </head>
 <body>
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -62,18 +68,45 @@
                         <div>
                     </li>
                 </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown mega-dropdown">
+                        <a href="#" class="dropdown-toggle" role="button" aria-expanded="false">Settings<span class="caret"></span></a>
+                        <div id="settings" class="dropdown-menu mega-dropdown-menu" role="menu">
+                            <div class="input-group setting">
+                                <span class="input-group-addon setting-label" id="settings-1">initial creatures</span>
+                                <input name="initial_creatures" type="text" class="form-control" value="30" aria-describedby="settings-1">
+                            </div>
+                            <div class="input-group setting">
+                                <span class="input-group-addon" id="settings-2">tick interval</span>
+                                <input name="tick_interval" type="text" class="form-control" value="400" aria-describedby="settings-2">
+                            </div>
+                            <div class="input-group setting">
+                                <span class="input-group-addon" id="settings-3">map width</span>
+                                <input name="map_width" type="text" class="form-control" value="64" aria-describedby="settings-3">
+                            </div>
+                            <div class="input-group setting">
+                                <span class="input-group-addon" id="settings-4">map height</span>
+                                <input name="map_height" type="text" class="form-control" value="64" aria-describedby="settings-4">
+                            </div>
+                            <div class="input-group setting">
+                                <span class="input-group-addon" id="settings-5">foobar</span>
+                                <input name="foobar" type="text" class="form-control" value="batz" aria-describedby="settings-5">
+                            </div>
+                        <div>
+                    </li>
+                </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
 
     <div id="tilemap"></div>
 
-    <nav class="navbar navbar-default navbar-fixed-bottom">
+    <nav class="navbar navbar-inverse navbar-fixed-bottom">
         <div class="nav navbar-nav navbar-nav-bottom btn-group controls" role="group">
-            <input id="player" type="checkbox" checked data-toggle="toggle" data-on="<i class='fa fa-play'></i> Play" data-off="<i class='fa fa-pause'></i> Pause">
-            <button id="zoomin" class="btn btn-primary navbar-btn"><span class="glyphicon glyphicon-zoom-in"></span> Zoom In</button>
-            <button id="zoomout" class="btn btn-primary navbar-btn"><span class="glyphicon glyphicon-zoom-out"></span> Zoom Out</button>
-            <button class="btn btn-danger navbar-btn" type="reset" id="reset">Reset</button>
+            <input id="player" type="checkbox" checked data-toggle="toggle" data-on="<i class='fa fa-play'></i>&nbsp;" data-off="<i class='fa fa-pause'></i>&nbsp;">
+            <button id="zoomin" class="btn btn-primary navbar-btn"><span class="glyphicon glyphicon-zoom-in"></span>&nbsp;</button>
+            <button id="zoomout" class="btn btn-primary navbar-btn"><span class="glyphicon glyphicon-zoom-out"></span>&nbsp;</button>
+            <button class="btn btn-danger navbar-btn" type="reset" id="reset"><span class="glyphicon glyphicon-refresh"></span>&nbsp;</button>
         </div>
     </nav>
 </body>

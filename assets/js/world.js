@@ -49,7 +49,7 @@ World.prototype = {
 		world.animate();
     },
     initTilemap: function() {
-		this.tilemap = new Tilemap(this.tile_width, this.tile_height, this.renderer_width, this.renderer_height);
+		this.tilemap = new Tilemap(this.tile_width, this.tile_height, this.renderer_width, this.renderer_height, this.raw_world.Plan);
 		this.tilemap.position.x = 0;
 		this.tilemap.zoomIn();
 	},
@@ -76,6 +76,7 @@ World.prototype = {
 		});
 		this.table.clear().draw();
 		this.raw_world = raw_world
+		this.tilemap.clear(raw_world.Plan)
 		this.loadCreatures()
     },
     loadCreatures: function() {
