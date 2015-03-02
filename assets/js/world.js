@@ -43,6 +43,12 @@ World.prototype = {
 		world.initTilemap()
 		world.initTable()
 
+		setInterval(function() {
+		    world.table
+		         .dataTable()
+		         .draw();
+		}, 1000);
+
 		world.stage.addChild(world.tilemap);
 		world.loadCreatures()
 		// begin drawing
@@ -102,7 +108,7 @@ World.prototype = {
 		creature.tile.position.x = creature.X * this.tilemap.tileSize;
 		creature.tile.position.y = creature.Y * this.tilemap.tileSize;
 		this.creatures.set(creature.Id, creature);
-		this.table.row('#' + creature.DT_RowId).data(creature).draw();
+		this.table.row('#' + creature.DT_RowId).data(creature)
 	},
 	deleteCreature: function(raw_creature) {
 		creature = this.creatures.get(raw_creature.Id);
