@@ -61,7 +61,6 @@ func (self *Creature) Evolve(world *World) {
 		self.calculateHunger()
 		self.calculateHealth()
 		self.move()
-		self.client.Write(NewMessage("update", self))
 		tick.Wait.Done()
 		if self.Health == 0 {
 			break
@@ -69,7 +68,7 @@ func (self *Creature) Evolve(world *World) {
 	}
 	self.alive = false
 	world.Requests <- &DeleteRequest{Request{obj: self}}
-	self.client.Write(NewMessage("delete", self))
+	self.client.Write(NewMessage("delete-creature", self))
 	self.world = nil
 }
 
@@ -165,27 +164,4 @@ func (c Creatures) Remove(creature *Creature) {
 	c[i] = nil
 	nc = append(c[:i], c[i+1:]...)
 	c = nc
-}
-
-func (c Creatures) ToMap(start, end int) []interface{} {
-	data := make([]interface{}, end-start)
-	if start < len(c) {
-		p := 0
-		for i := start; i < end; i++ {
-			e := c[i]
-			record := make(map[string]interface{})
-			record["Name"] = e.Name
-			record["Age"] = e.Age
-			record["Health"] = e.Health
-			record["Libido"] = e.Libido
-			record["Hunger"] = e.Hunger
-			record["Gender"] = e.Gender
-			record["X"] = e.X
-			record["Y"] = e.Y
-			record["Id"] = e.Id
-			data[p] = record
-			p++
-		}
-	}
-	return data
 }

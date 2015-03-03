@@ -24,15 +24,6 @@ type Plant struct {
 	NutritionalValue float32
 }
 
-type Message map[string]interface{}
-
-func NewMessage(action string, data interface{}) *Message {
-	m := make(Message)
-	m["data"] = data
-	m["action"] = action
-	return &m
-}
-
 type Evolver interface {
 	GetX() int
 	GetY() int

@@ -23,10 +23,11 @@ type World struct {
 	Tick      int
 	Speed     time.Duration
 	Plan      Plan
+	client 	  *Client
 	running	  bool
 }
 
-func NewWorld(w, h int) *World {
+func NewWorld(w, h int, client *Client) *World {
 	world := new(World)
 	world.W = w
 	world.H = h
@@ -42,6 +43,7 @@ func NewWorld(w, h int) *World {
 	world.Tick = 0
 	world.Plan = NewPlan(w,h)
 	world.running = false
+	world.client = client
 	go world.serve()
 	return world
 }
@@ -95,6 +97,7 @@ func (world *World) pulse() {
 			}
 		}
 		w.Wait()
+		world.client.Write(NewMessage("update-world", world))
 	}
 }
 

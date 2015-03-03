@@ -10,11 +10,11 @@ function World(renderer_width, renderer_height) {
 }
 
 World.prototype = {
-	init: function(world) {
+	init: function(raw_world) {
 		self = this
-		this.raw_world = world
-		this.tile_width = world.W
-		this.tile_height = world.H
+		this.raw_world = raw_world
+		this.tile_width = raw_world.W
+		this.tile_height = raw_world.H
         // For zoomed-in pixel art, we want crisp pixels instead of fuzziness
         PIXI.scaleModes.DEFAULT = PIXI.scaleModes.NEAREST;
 
@@ -39,14 +39,12 @@ World.prototype = {
         $("#tilemap").append(self.renderer.view);
     },
     onLoaded: function() {
-		world = this.world
+		var world = this.world
 		world.initTilemap()
 		world.initTable()
 
 		setInterval(function() {
-		    world.table
-		         .dataTable()
-		         .draw();
+		    world.table.draw();
 		}, 1000);
 
 		world.stage.addChild(world.tilemap);
@@ -75,7 +73,7 @@ World.prototype = {
             ]
         });
     },
-    reload: function(raw_world) {
+	reload: function(raw_world) {
 		var self = this
 		this.creatures.forEach(function(v, k, m) {
 			self.tilemap.removeChild(v.tile);
@@ -84,7 +82,14 @@ World.prototype = {
 		this.raw_world = raw_world
 		this.tilemap.clear(raw_world.Plan)
 		this.loadCreatures()
-    },
+	},
+	update: function(raw_world) {
+		this.raw_world = raw_world;
+		var self = this;
+		for (var i = 0; i < raw_world.Creatures.length; i++) {
+			self.updateCreature(raw_world.Creatures[i]);
+		}
+	},
     loadCreatures: function() {
 		for (var i=0; i<this.raw_world.Creatures.length; i++) {
 			creature = this.raw_world.Creatures[i];
@@ -99,7 +104,7 @@ World.prototype = {
 		creature.tile.position.y = creature.Y * this.tilemap.tileSize;
 		this.tilemap.addChild(creature.tile);
 		this.table.row.add(creature).draw();
-    },
+	},
 	updateCreature: function(raw_creature) {
 		creature = this.creatures.get(raw_creature.Id);
 		for (var attrname in raw_creature) {

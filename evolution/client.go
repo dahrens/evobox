@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"math/rand"
-	"strconv"
 	"time"
 )
 
@@ -38,14 +37,14 @@ func NewClient(ws *websocket.Conn, server *Server) *Client {
 	c.AutoInc = NewAutoInc(0, 1)
 	c.Id = server.Next.Id()
 	c.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-	c.World = NewWorld(64, 64)
+	c.World = NewWorld(64, 64, c)
 	c.server = server
 	c.Conn = ws
 	return c
 }
 
-func (client *Client) WebsocketHandler(ws *websocket.Conn) {
-	client.Conn = ws
+func (c *Client) WebsocketHandler(ws *websocket.Conn) {
+	c.Conn = ws
 	io.Copy(ws, ws)
 }
 
@@ -94,37 +93,7 @@ func (c *Client) listenRead() {
 			} else if err != nil {
 				c.server.Err(err)
 			} else {
-				if action, ok := msg["action"]; ok {
-					switch action {
-					case "Reset":
-						fallthrough
-					case "connect":
-						settings := msg["settings"].(map[string]interface{})
-						count, _ := strconv.Atoi(settings["initial_creatures"].(string))
-						tick_interval, _ := strconv.Atoi(settings["tick_interval"].(string))
-						map_width, _ := strconv.Atoi(settings["map_width"].(string))
-						map_height, _ := strconv.Atoi(settings["map_height"].(string))
-						c.World.Reset(tick_interval, map_width, map_height)
-						c.Init(count)
-						c.Write(NewMessage("load-world", c.World))
-					case "Start":
-						c.World.Run()
-					case "Pause":
-						c.World.Pause()
-					case "Spawn":
-						coin := c.Rand.Intn(2)
-						var gender Gender
-						switch coin {
-						case 0:
-							gender = GENDER_FEMALE
-						default:
-							gender = GENDER_MALE
-						}
-						e := NewCreature(100.0, gender, c)
-						c.Spawn(e)
-						c.Write(NewMessage("add-creature", e))
-					}
-				}
+				DispatchIncomingMessage(&msg, c)
 			}
 		}
 	}
@@ -140,22 +109,22 @@ func (c *Client) Write(msg *Message) {
 	}
 }
 
-func (client *Client) Init(initialCreatures int) {
-	client.SpawnMany(initialCreatures/2, GENDER_MALE)
-	client.SpawnMany(initialCreatures/2, GENDER_FEMALE)
+func (c *Client) Init(initialCreatures int) {
+	c.SpawnMany(initialCreatures/2, GENDER_MALE)
+	c.SpawnMany(initialCreatures/2, GENDER_FEMALE)
 }
 
-func (client *Client) SpawnMany(n int, gender Gender) {
+func (c *Client) SpawnMany(n int, gender Gender) {
 	for i := 0; i < n; i++ {
-		e := NewCreature(float32(i+10), gender, client)
-		client.Spawn(e)
+		e := NewCreature(float32(i+10), gender, c)
+		c.Spawn(e)
 	}
 }
 
-func (client *Client) Spawn(e Evolver) {
+func (c *Client) Spawn(e Evolver) {
 	switch obj := e.(type) {
 	case *Creature:
 		r := NewPutRequest(obj)
-		client.World.Requests <- r
+		c.World.Requests <- r
 	}
 }

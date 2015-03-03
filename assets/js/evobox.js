@@ -19,7 +19,7 @@ function Evobox() {
 
 Evobox.prototype = {
     onOpen: function()   {
-        msg = {"action": "connect", "settings": ReadSettings()};
+        msg = {"Action": "Connect", "Data": ReadSettings()};
 		this.send(JSON.stringify(msg));
 	},
 	onError: function(error) {
@@ -27,24 +27,27 @@ Evobox.prototype = {
 	},
 	onMessage: function(raw_msg) {
 		var msg = JSON.parse(raw_msg.data);
-		switch(msg.action) {
+		switch(msg.Action) {
 			case "load-world":
-				this.evobox.loadWorld(msg.data)
+				this.evobox.loadWorld(msg.Data)
 				break;
-		    case "update":
-				this.evobox.world.updateCreature(msg.data)
+		    case "update-world":
+				//this.evobox.world.updateCreature(msg.Data)
+				this.evobox.world.update(msg.Data)
 				break;
-			case "delete":
-				this.evobox.world.deleteCreature(msg.data)
+			case "delete-creature":
+				this.evobox.world.deleteCreature(msg.Data)
 				break;
 			case "add-creature":
-				this.evobox.world.addCreature(msg.data)
+				this.evobox.world.addCreature(msg.Data)
 				break;
 			default:
 				console.log("unknown message received:");
+				console.log(msg)
 		}
 	},
 	loadWorld: function(raw_world) {
+		console.log(raw_world)
 		var self = this
 		if (self.initialized === false) {
 			this.world.init(raw_world)
@@ -80,20 +83,20 @@ Evobox.prototype = {
 		}
 	},
 	start: function() {
-		msg = {"action": "Start"}
+		msg = {"Action": "Start", "Data": []}
 		this.server.send(JSON.stringify(msg));
 	},
 	pause: function() {
-		msg = {"action": "Pause"}
+		msg = {"Action": "Pause", "Data": []}
 		this.server.send(JSON.stringify(msg));
 	},
 	reset: function() {
-		msg = {"action": "Reset", "settings": ReadSettings()}
+		msg = {"Action": "Reset", "Data": ReadSettings()}
 		this.server.send(JSON.stringify(msg));
 		$('#player').bootstrapToggle('on')
 	},
 	spawn: function() {
-		msg = {"action": "Spawn", "settings": ReadSettings()}
+		msg = {"Action": "Spawn", "Data": ReadSettings()}
 		this.server.send(JSON.stringify(msg));
 	}
 }
