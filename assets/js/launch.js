@@ -1,5 +1,4 @@
 $(document).ready( function () {
-    new Evobox();
 
     $('li.dropdown.mega-dropdown a').on('click', function (event) {
 	    $(this).parent().toggleClass("open");
@@ -12,4 +11,13 @@ $(document).ready( function () {
 	});
 
     $(".toggle").addClass("navbar-btn");
+
+    width = $("#sceene").width()
+	height = $(document).height() - 100;
+
+	var game = new Phaser.Game(width, height, Phaser.Auto, 'sceene');
+	game.state.add('Boot', Boot);
+	game.state.add('Preload', Preload);
+	game.state.add('Evobox', Evobox);
+	game.state.start('Boot');
 });

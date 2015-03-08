@@ -3,35 +3,35 @@ package evolution
 import "math/rand"
 
 const (
-	FIELDS            = 20
-	FIELDS_WIDTH_MIN  = 5
-	FIELDS_HEIGHT_MIN = 5
-	FIELDS_WIDTH_MAX  = 10
-	FIELDS_HEIGHT_MAX = 10
+	FIELDS            = 12
+	FIELDS_WIDTH_MIN  = 2
+	FIELDS_HEIGHT_MIN = 2
+	FIELDS_WIDTH_MAX  = 4
+	FIELDS_HEIGHT_MAX = 4
 )
 
 type Terrains []string
 
-type Cell struct {
+type Field struct {
 	Passable bool
 	Terrains []string
 }
 
-func NewCell(terrains []string) *Cell {
-	cell := new(Cell)
-	cell.Terrains = terrains
-	cell.Passable = true
-	return cell
+func NewField(terrains []string) *Field {
+	field := new(Field)
+	field.Terrains = terrains
+	field.Passable = true
+	return field
 }
 
-type Cells []*Cell
+type Fields []*Field
 
-type Plan []Cells
+type Plan []Fields
 
 func NewPlan(w, h int) Plan {
 	plan := make(Plan, w)
 	for x := 0; x < w; x++ {
-		plan[x] = make(Cells, h)
+		plan[x] = make(Fields, h)
 	}
 	plan.generate(w, h)
 	return plan
@@ -41,7 +41,7 @@ func (plan Plan) generate(w, h int) {
 	for x, row := range plan {
 		for y, _ := range row {
 			terrains := Terrains{"Tiles/grass1.png"}
-			plan[x][y] = NewCell(terrains)
+			plan[x][y] = NewField(terrains)
 		}
 	}
 	for i := 0; i < FIELDS; i++ {
@@ -52,7 +52,7 @@ func (plan Plan) generate(w, h int) {
 		for x := start_x; x < start_x+width; x++ {
 			for y := start_y; y < start_y+height; y++ {
 				if x < w && y < h {
-					plan[x][y] = NewCell(Terrains{"Tiles/dirt1.png", "Planter og Farm stuff/wheat4.png"})
+					plan[x][y] = NewField(Terrains{"Tiles/dirt1.png", "Planter og Farm stuff/wheat4.png"})
 				}
 			}
 		}

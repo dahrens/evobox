@@ -4,7 +4,6 @@ import (
 	"log"
 )
 
-// Chat server.
 type Server struct {
 	pattern  string
 	messages []*Message
@@ -16,7 +15,6 @@ type Server struct {
 	Next     *AutoInc
 }
 
-// Create new chat server.
 func NewServer(pattern string) *Server {
 	messages := make([]*Message, 100)
 	clients := make(map[int]*Client)
@@ -69,12 +67,6 @@ func (s *Server) Listen() {
 		case c := <-s.delCh:
 			log.Println("Delete client")
 			delete(s.clients, c.Id)
-
-		// broadcast message for all clients
-		// case msg := <-s.sendAllCh:
-		// 	log.Println("Send all:", msg)
-		// 	s.messages = append(s.messages, msg)
-		// 	s.sendAll(msg)
 
 		case err := <-s.ErrCh:
 			log.Println("Error:", err.Error())

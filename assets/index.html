@@ -30,18 +30,16 @@
     </style>
     <!-- jQuery -->
     <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="js/lib/jquery.mousewheel.min.js"></script>
     <!-- DataTables -->
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.js"></script>
     <script type="text/javascript" charset="utf8" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
 
-    <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/pixi.js/2.2.5/pixi.js"></script>
-    <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/stats.js/r11/Stats.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.2.2/phaser.js"></script>
+    <script src="js/boot.js"></script>
+    <script src="js/preload.js"></script>
     <script src="js/evobox.js"></script>
-    <script src="js/world.js"></script>
-    <script src="js/tilemap.js"></script>
     <script src="js/launch.js"></script>
 </head>
 <body>
@@ -81,19 +79,11 @@
                         <div id="settings" class="dropdown-menu mega-dropdown-menu" role="menu">
                             <div class="input-group setting">
                                 <span class="input-group-addon setting-label" id="settings-1">initial creatures</span>
-                                <input name="initial_creatures" type="text" class="form-control" value="30" aria-describedby="settings-1">
+                                <input name="initial_creatures" type="text" class="form-control" value="10" aria-describedby="settings-1">
                             </div>
                             <div class="input-group setting">
                                 <span class="input-group-addon" id="settings-2">tick interval</span>
-                                <input name="tick_interval" type="text" class="form-control" value="400" aria-describedby="settings-2">
-                            </div>
-                            <div class="input-group setting">
-                                <span class="input-group-addon" id="settings-3">map width</span>
-                                <input name="map_width" type="text" class="form-control" value="64" aria-describedby="settings-3">
-                            </div>
-                            <div class="input-group setting">
-                                <span class="input-group-addon" id="settings-4">map height</span>
-                                <input name="map_height" type="text" class="form-control" value="64" aria-describedby="settings-4">
+                                <input name="tick_interval" type="text" class="form-control" value="1000" aria-describedby="settings-2">
                             </div>
                             <div class="input-group setting">
                                 <span class="input-group-addon" id="settings-5">foobar</span>
@@ -106,7 +96,7 @@
         </div><!-- /.container-fluid -->
     </nav>
 
-    <div id="tilemap"></div>
+    <div id="sceene"></div>
 
     <nav class="navbar navbar-inverse navbar-fixed-bottom">
         <div class="nav navbar-nav navbar-nav-bottom btn-group controls" role="group">

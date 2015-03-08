@@ -32,10 +32,8 @@ func DispatchIncomingMessage(msg *Message, c *Client) {
 func handleConnect(data interface{}, c *Client) {
 	count, _ := strconv.Atoi(data.(map[string]interface{})["initial_creatures"].(string))
 	tick_interval, _ := strconv.Atoi(data.(map[string]interface{})["tick_interval"].(string))
-	map_width, _ := strconv.Atoi(data.(map[string]interface{})["map_width"].(string))
-	map_height, _ := strconv.Atoi(data.(map[string]interface{})["map_height"].(string))
-	c.World.Reset(tick_interval, map_width, map_height)
-	c.Init(count)
+	c.World.Reset(tick_interval, 2048, 2048)
+	c.World.Init(count)
 	c.Write(NewMessage("load-world", c.World))
 }
 
@@ -49,6 +47,6 @@ func handleSpawn(data interface{}, c *Client) {
 		gender = GENDER_MALE
 	}
 	e := NewCreature(100.0, gender, c)
-	c.Spawn(e)
+	c.World.Spawn(e)
 	c.Write(NewMessage("add-creature", e))
 }

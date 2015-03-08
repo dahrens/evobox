@@ -41,11 +41,31 @@ func NewWorld(w, h int, client *Client) *World {
 	world.Speed = 400 * time.Millisecond
 	world.Clock = time.NewTicker(world.Speed)
 	world.Tick = 0
-	world.Plan = NewPlan(w,h)
+	//world.Plan = NewPlan(w,h)
 	world.running = false
 	world.client = client
 	go world.serve()
 	return world
+}
+
+func (world *World) Init(initialCreatures int) {
+	world.SpawnMany(initialCreatures/2, GENDER_MALE)
+	world.SpawnMany(initialCreatures/2, GENDER_FEMALE)
+}
+
+func (world *World) SpawnMany(n int, gender Gender) {
+	for i := 0; i < n; i++ {
+		e := NewCreature(float32(i+10), gender, world.client)
+		world.Spawn(e)
+	}
+}
+
+func (world *World) Spawn(e Evolver) {
+	switch obj := e.(type) {
+	case *Creature:
+		r := NewPutRequest(obj)
+		world.Requests <- r
+	}
 }
 
 func (world *World) Run() {
@@ -74,7 +94,7 @@ func (world *World) Reset(tick_interval, map_width, map_height int) {
 	for x := 0; x < world.W; x++ {
 		world.Map[x] = make(Creatures, world.H)
 	}
-	world.Plan = NewPlan(map_width,map_height)
+	//world.Plan = NewPlan(map_width,map_height)
 }
 
 func (world *World) serve() {

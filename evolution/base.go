@@ -12,8 +12,18 @@ type Position struct {
 	Y int
 }
 
+type Size struct {
+	W int
+	H int
+}
+
 type Fragment struct {
 	Position
+	Size
+}
+
+type EvolverFragment struct {
+	Fragment
 	Age   int
 	Birth int
 	pulse chan *Tick
@@ -29,6 +39,10 @@ type Evolver interface {
 	GetY() int
 	SetX(int)
 	SetY(int)
+	GetW() int
+	GetH() int
+	SetW(int)
+	SetH(int)
 	Evolve(world *World)
 	Pulse() chan *Tick
 	Alive() bool

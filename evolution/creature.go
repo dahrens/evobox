@@ -2,6 +2,7 @@ package evolution
 
 import (
 	"github.com/Pallinder/go-randomdata"
+	"log"
 )
 
 type Gender string
@@ -14,12 +15,13 @@ const (
 )
 
 type Creature struct {
-	Fragment
+	EvolverFragment
 	Name       string
 	Health     float32
 	Hunger     float32
 	Libido     float32
 	Sanity     float32
+	Speed      int // pixels per tick
 	Gender     Gender
 	hunger_max float32
 	libido_max float32
@@ -34,6 +36,8 @@ func NewCreature(health float32, gender Gender, client *Client) *Creature {
 	// Fragment values
 	c.X = client.Rand.Intn(client.World.W)
 	c.Y = client.Rand.Intn(client.World.H)
+	c.W = 32
+	c.H = 32
 	c.Birth = client.World.Tick
 	c.Age = 0
 	c.pulse = make(chan *Tick)
@@ -43,6 +47,7 @@ func NewCreature(health float32, gender Gender, client *Client) *Creature {
 	c.Hunger = 5.0
 	c.Libido = 0.0
 	c.Sanity = 100.0
+	c.Speed = 32
 	c.Gender = gender
 	c.hunger_max = 10.0
 	c.libido_max = 10.0
@@ -112,6 +117,22 @@ func (self *Creature) SetY(y int) {
 	self.Y = y
 }
 
+func (self *Creature) GetW() int {
+	return self.W
+}
+
+func (self *Creature) SetW(w int) {
+	self.W = w
+}
+
+func (self *Creature) GetH() int {
+	return self.H
+}
+
+func (self *Creature) SetH(h int) {
+	self.H = h
+}
+
 func (self *Creature) Pulse() chan *Tick {
 	return self.pulse
 }
@@ -121,18 +142,20 @@ func (self *Creature) Alive() bool {
 }
 
 func (self *Creature) move() {
-	coin := self.client.Rand.Intn(4)
+	coin := self.client.Rand.Intn(12)
 	newX := self.X
 	newY := self.Y
 	switch coin {
 	case 0:
-		newX--
+		newX -= 64
 	case 1:
-		newX++
+		newX += 64
 	case 2:
-		newY--
+		newY -= 64
 	case 3:
-		newY++
+		newY += 64
+	default:
+		log.Println("idle")
 	}
 	req := new(PostRequest)
 	req.obj = self

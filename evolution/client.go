@@ -108,23 +108,3 @@ func (c *Client) Write(msg *Message) {
 		c.server.Err(err)
 	}
 }
-
-func (c *Client) Init(initialCreatures int) {
-	c.SpawnMany(initialCreatures/2, GENDER_MALE)
-	c.SpawnMany(initialCreatures/2, GENDER_FEMALE)
-}
-
-func (c *Client) SpawnMany(n int, gender Gender) {
-	for i := 0; i < n; i++ {
-		e := NewCreature(float32(i+10), gender, c)
-		c.Spawn(e)
-	}
-}
-
-func (c *Client) Spawn(e Evolver) {
-	switch obj := e.(type) {
-	case *Creature:
-		r := NewPutRequest(obj)
-		c.World.Requests <- r
-	}
-}
