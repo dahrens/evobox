@@ -1,11 +1,10 @@
 evobox
 ======
 
-This is just a playground for golang - learning concurrent concepts by implementing a
-world where every participant runs in its own goroutine...
+This is just a playground for golang and phaser.
 
 dependencies
-============
+------------
 
 The backend if driven by gin, the golang dependencies are covered by Godeps...
 
@@ -15,31 +14,13 @@ The backend if driven by gin, the golang dependencies are covered by Godeps...
 
 The Frontend uses several js and css libs, which get loaded using cdn's
 
-* phaser
-* jquery
-* jquery datatables
-* bootstrap3
-
-install
-=======
-
-```
-go get github.com/dahrens/evobox
-```
-
-usage
-=====
-
-Make sure that you run the binary from within a folder where the assets are available.
-
-```
-go install github.com/dahrens/evobox
-cd $GOPATH/src/github/dahrens/evobox
-evobox
-```
+* http://phaser.io/
+* http://jquery.com/
+* http://www.datatables.net/
+* http://getbootstrap.com/
 
 artwork
-=======
+-------
 
 Since i am not good at graphic design i rely on open source published content
 made by others. Thank for your sharing your Work.
@@ -56,3 +37,22 @@ Tools
 * http://inkscape.org
 * http://www.synfig.org/
 * http://www.codeandweb.com/texturepacker
+
+install
+-------
+
+```
+go get github.com/dahrens/evobox
+```
+
+usage
+-----
+
+Make sure that you run the binary from within a folder where the assets are available.
+
+```
+go install github.com/dahrens/evobox
+cd $GOPATH/src/github/dahrens/evobox
+evobox
+```
+
