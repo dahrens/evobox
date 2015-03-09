@@ -12,7 +12,7 @@ The backend if driven by gin, the golang dependencies are covered by Godeps...
 * https://github.com/gin-gonic/contrib/static
 * https://github.com/Pallinder/go-randomdata
 
-The Frontend uses several js and css libs, which get loaded using cdn's
+The frontend uses several js and css libs, which get loaded using cdn's
 
 * http://phaser.io/
 * http://jquery.com/
@@ -23,7 +23,7 @@ artwork
 -------
 
 Since i am not good at graphic design i rely on open source published content
-made by others. Thank for your sharing your Work.
+made by others. Thank you for sharing your work.
 
 Artists
 

@@ -53,7 +53,6 @@ Evobox.prototype = {
 	    this.game.camera.y = 100;
 
 	    back = this.game.add.sprite(0, 0, 'default', 'island.png');
-	    console.log(back)
 	    back.scale.set(this.cur_scale);
 
 	    this.game.input.mouse.mouseWheelCallback = mouseWheel;
@@ -215,9 +214,10 @@ Evobox.prototype = {
 	},
 	moveCreature: function(creature, p) {
 		if (creature.sprite.isTweening) {
+			// stop active animations and tweens when new move starts...
 			console.log("still tweening")
 		}
-		creature.sprite.animations.play('move', 120);
+		creature.sprite.animations.play('move');
 		var tween = this.tweens.create(creature.sprite);
 		//  creature.Speed = speed in pixels per second = the speed the sprite will move at, regardless of the distance it has to travel
 		var duration = (this.game.physics.arcade.distanceToPointer(creature.sprite, p) / creature.Speed) * 1000;
@@ -229,11 +229,15 @@ Evobox.prototype = {
 		this.tweens.add(tween)
 	},
 	deleteCreature: function(raw_creature) {
-		console.log("delete me")
-		console.log(creature)
 		creature = this.creatures.get(raw_creature.Id);
 		creature.sprite.destroy();
 		this.table.row('#' + creature.DT_RowId).remove().draw();
+	},
+	deleteCreatures: function() {
+		this.creatures.forEach(function(v,k,m){
+			v.sprite.destroy();
+		});
+		this.table.clear().draw()
 	},
 	start: function() {
 		msg = {"Action": "Start", "Data": []}
@@ -244,6 +248,7 @@ Evobox.prototype = {
 		this.server.send(JSON.stringify(msg));
 	},
 	reset: function() {
+		this.deleteCreatures();
 		msg = {"Action": "Reset", "Data": ReadSettings()}
 		this.server.send(JSON.stringify(msg));
 		$('#player').bootstrapToggle('on')
