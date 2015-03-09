@@ -2,8 +2,8 @@ package evolution
 
 import (
 	"log"
-	"time"
 	"sync"
+	"time"
 )
 
 type Requester interface {
@@ -17,14 +17,14 @@ type World struct {
 	H         int
 	Evolvers  Evolvers `json:"-"`
 	Creatures Creatures
-	Map       []Creatures `json:"-"`
+	Map       []Creatures    `json:"-"`
 	Requests  chan Requester `json:"-"`
-	Clock     *time.Ticker `json:"-"`
+	Clock     *time.Ticker   `json:"-"`
 	Tick      int
 	Speed     time.Duration
-	Plan      Plan
-	client 	  *Client
-	running	  bool
+	Plan      *Plan
+	client    *Client
+	running   bool
 }
 
 func NewWorld(w, h int, client *Client) *World {
@@ -41,7 +41,7 @@ func NewWorld(w, h int, client *Client) *World {
 	world.Speed = 400 * time.Millisecond
 	world.Clock = time.NewTicker(world.Speed)
 	world.Tick = 0
-	//world.Plan = NewPlan(w,h)
+	world.Plan = NewPlan(w, h)
 	world.running = false
 	world.client = client
 	go world.serve()
@@ -94,7 +94,7 @@ func (world *World) Reset(tick_interval, map_width, map_height int) {
 	for x := 0; x < world.W; x++ {
 		world.Map[x] = make(Creatures, world.H)
 	}
-	//world.Plan = NewPlan(map_width,map_height)
+	world.Plan = NewPlan(map_width, map_height)
 }
 
 func (world *World) serve() {
@@ -117,7 +117,7 @@ func (world *World) pulse() {
 			}
 		}
 		w.Wait()
-		world.client.Write(NewMessage("update-world", world))
+		world.client.Write(NewMessage("update-creatures", world.Creatures))
 	}
 }
 

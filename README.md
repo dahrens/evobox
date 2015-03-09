@@ -30,6 +30,7 @@ Artists
   * http://www.lostgarden.com Daniel Cook
   * https://openclipart.org/user-detail/Keistutis
   * https://openclipart.org/user-detail/lemmling
+  * https://openclipart.org/user-detail/intergrapher
 
 Tools
 

@@ -1,13 +1,17 @@
 package evolution
 
-import "sync"
+import (
+	"math/rand"
+	"sync"
+	"time"
+)
 
 type Tick struct {
 	Count int
 	Wait  *sync.WaitGroup
 }
 
-type Position struct {
+type Point struct {
 	X int
 	Y int
 }
@@ -17,9 +21,15 @@ type Size struct {
 	H int
 }
 
+type Anchor struct {
+	X float32
+	Y float32
+}
+
 type Fragment struct {
-	Position
+	Point
 	Size
+	Anchor Anchor
 }
 
 type EvolverFragment struct {
@@ -29,12 +39,7 @@ type EvolverFragment struct {
 	pulse chan *Tick
 }
 
-type Plant struct {
-	Fragment
-	NutritionalValue float32
-}
-
-type Evolver interface {
+type Fragmenter interface {
 	GetX() int
 	GetY() int
 	SetX(int)
@@ -43,6 +48,10 @@ type Evolver interface {
 	GetH() int
 	SetW(int)
 	SetH(int)
+}
+
+type Evolver interface {
+	Fragmenter
 	Evolve(world *World)
 	Pulse() chan *Tick
 	Alive() bool
@@ -92,4 +101,11 @@ func (ai *AutoInc) Id() int {
 func (ai *AutoInc) Close() {
 	ai.running = false
 	close(ai.queue)
+}
+
+// http://golangcookbook.blogspot.de/2012/11/generate-random-number-in-given-range.html
+
+func random(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min) + min
 }

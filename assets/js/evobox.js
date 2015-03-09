@@ -129,8 +129,9 @@ Evobox.prototype = {
 		this.game.debug.cameraInfo(this.game.camera, 2, 32);
 	 	this.game.debug.text(this.game.time.fps + 'FPS' || '-- FPS', 2, 14, "#ffffff");   
 	},
-    onOpen: function()   {
-        msg = {"Action": "Connect", "Data": ReadSettings()};
+	onOpen: function()   {
+		console.log("send connect");
+		msg = {"Action": "Connect", "Data": ReadSettings()};
 		this.send(JSON.stringify(msg));
 	},
 	onError: function(error) {
@@ -138,12 +139,13 @@ Evobox.prototype = {
 	},
 	onMessage: function(raw_msg) {
 		var msg = JSON.parse(raw_msg.data);
+		console.log(msg);
 		switch(msg.Action) {
 			case "load-world":
 				this.evobox.loadWorld(msg.Data)
 				break;
-		    case "update-world":
-				this.evobox.updateWorld(msg.Data)
+		    case "update-creatures":
+				this.evobox.updateCreatures(msg.Data)
 				break;
 			case "delete-creature":
 				this.evobox.deleteCreature(msg.Data)
@@ -162,6 +164,10 @@ Evobox.prototype = {
 		for (var i=0; i<raw_world.Creatures.length; i++) {
 			creature = raw_world.Creatures[i];
 			self.addCreature(creature)
+		}
+		for (var i=0; i<raw_world.Plan.Fragments.length; i++) {
+			fragment = raw_world.Plan.Fragments[i];
+			self.addFragment(fragment)
 		}
 		$('#player').change(function() {
             if ($(this).prop('checked')) {
@@ -183,9 +189,12 @@ Evobox.prototype = {
             self.spawn()
         });
 	},
-	updateWorld: function(raw_world) {
-		for (var i=0; i<raw_world.Creatures.length; i++) {
-			raw_creature = raw_world.Creatures[i];
+	addFragment: function(fragment) {
+		fragment.sprite = this.game.add.sprite(fragment.X, fragment.Y, fragment.Sheet, fragment.Sprite);
+	},
+	updateCreatures: function(raw_creatures) {
+		for (var i=0; i<raw_creatures.length; i++) {
+			raw_creature = raw_creatures[i];
 			creature = this.creatures.get(raw_creature.Id);
 			if (raw_creature.X != creature.X || raw_creature.Y != creature.Y) {
 				this.moveCreature(creature, {x: raw_creature.X, y: raw_creature.Y});
