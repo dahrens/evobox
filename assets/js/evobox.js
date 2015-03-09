@@ -209,8 +209,8 @@ Evobox.prototype = {
 
 		creature.DT_RowId = "creature-id-" + creature.Id;
 		this.table.row.add(creature).draw();
-
 		this.creatures.set(creature.Id, creature);
+		$("#creature-count").text(this.creatures.size.toString());
 	},
 	moveCreature: function(creature, p) {
 		if (creature.sprite.isTweening) {
@@ -232,12 +232,16 @@ Evobox.prototype = {
 		creature = this.creatures.get(raw_creature.Id);
 		creature.sprite.destroy();
 		this.table.row('#' + creature.DT_RowId).remove().draw();
+		this.creatures.delete(creature);
+		$("#creature-count").text(this.creatures.size.toString());
 	},
 	deleteCreatures: function() {
 		this.creatures.forEach(function(v,k,m){
 			v.sprite.destroy();
 		});
 		this.table.clear().draw()
+		this.creatures.clear()
+		$("#creature-count").text(this.creatures.size.toString());
 	},
 	start: function() {
 		msg = {"Action": "Start", "Data": []}
