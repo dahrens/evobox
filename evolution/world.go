@@ -16,14 +16,14 @@ type World struct {
 	W         int
 	H         int
 	Evolvers  Evolvers `json:"-"`
+	Flowers   Flowers
 	Creatures Creatures
-	Map       []Creatures    `json:"-"`
 	Requests  chan Requester `json:"-"`
 	Clock     *time.Ticker   `json:"-"`
 	Tick      int
 	Speed     time.Duration
 	Plan      *Plan
-	client    *Client
+	Client    *Client `json:"-"`
 	running   bool
 }
 
@@ -33,36 +33,43 @@ func NewWorld(w, h int, client *Client) *World {
 	world.H = h
 	world.Evolvers = make(Evolvers, 0)
 	world.Creatures = make(Creatures, 0)
-	world.Map = make([]Creatures, w)
-	for x := 0; x < w; x++ {
-		world.Map[x] = make(Creatures, h)
-	}
+	world.Flowers = make(Flowers, 0)
 	world.Requests = make(chan Requester)
 	world.Speed = 400 * time.Millisecond
 	world.Clock = time.NewTicker(world.Speed)
 	world.Tick = 0
-	world.Plan = NewPlan(w, h)
+	world.Plan = NewPlan(w, h, world)
 	world.running = false
-	world.client = client
+	world.Client = client
 	go world.serve()
 	return world
 }
 
-func (world *World) Init(initialCreatures int) {
-	world.SpawnMany(initialCreatures/2, GENDER_MALE)
-	world.SpawnMany(initialCreatures/2, GENDER_FEMALE)
+func (world *World) Init(initialCreatures, initialFlowers int) {
+	world.SpawnManyCreatures(initialCreatures/2, GENDER_MALE)
+	world.SpawnManyCreatures(initialCreatures/2, GENDER_FEMALE)
+	world.SpawnManyFlowers(initialFlowers/3, "flower-orange.png")
+	world.SpawnManyFlowers(initialFlowers/3, "flower-red.png")
+	world.SpawnManyFlowers(initialFlowers/3, "flower-yellow.png")
 }
 
-func (world *World) SpawnMany(n int, gender Gender) {
+func (world *World) SpawnManyFlowers(n int, color string) {
 	for i := 0; i < n; i++ {
-		e := NewCreature(float32(i+10), gender, world.client)
+		e := NewFlower(random(300, 1800), random(300, 1800), color, world)
+		world.Spawn(e)
+	}
+}
+
+func (world *World) SpawnManyCreatures(n int, gender Gender) {
+	for i := 0; i < n; i++ {
+		e := NewCreature(float32(i+10), gender, world.Client)
 		world.Spawn(e)
 	}
 }
 
 func (world *World) Spawn(e Evolver) {
 	switch obj := e.(type) {
-	case *Creature:
+	case Evolver:
 		r := NewPutRequest(obj)
 		world.Requests <- r
 	}
@@ -90,11 +97,7 @@ func (world *World) Reset(tick_interval, map_width, map_height int) {
 	}
 	world.Evolvers = make(Evolvers, 0)
 	world.Creatures = make(Creatures, 0)
-	world.Map = make([]Creatures, world.W)
-	for x := 0; x < world.W; x++ {
-		world.Map[x] = make(Creatures, world.H)
-	}
-	world.Plan = NewPlan(map_width, map_height)
+	world.Plan = NewPlan(map_width, map_height, world)
 }
 
 func (world *World) serve() {
@@ -117,7 +120,7 @@ func (world *World) pulse() {
 			}
 		}
 		w.Wait()
-		world.client.Write(NewMessage("update-creatures", world.Creatures))
+		//world.Client.Write(NewMessage("update-creatures", world.Creatures))
 	}
 }
 
@@ -151,7 +154,9 @@ func (world *World) handlePut(req *PutRequest) {
 	switch o := req.Obj().(type) {
 	case *Creature:
 		world.Creatures = append(world.Creatures, o)
-		world.Map[o.GetX()][o.GetY()] = o
+		go o.Evolve(world)
+	case *Flower:
+		world.Flowers = append(world.Flowers, o)
 		go o.Evolve(world)
 	}
 }
@@ -162,13 +167,8 @@ func (world *World) handlePost(req *PostRequest) {
 	}
 	switch o := req.Obj().(type) {
 	case *Creature:
-		if world.Map[req.X()][req.Y()] != nil {
-			return
-		}
 		o.SetX(req.X())
 		o.SetY(req.Y())
-		world.Map[o.GetX()][o.GetY()] = o
-		world.Map[o.GetX()][o.GetY()] = nil
 	}
 }
 
@@ -184,7 +184,6 @@ func (world *World) handleDelete(req *DeleteRequest) {
 	world.Evolvers = append(world.Evolvers[:i], world.Evolvers[i+1:]...)
 	switch o := req.Obj().(type) {
 	case *Creature:
-		world.Map[o.GetX()][o.GetY()] = nil
 		world.removeCreature(o)
 	}
 }

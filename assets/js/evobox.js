@@ -28,6 +28,8 @@ var Evobox = function(game){
 
 	this.connected = false
 	this.creatures = new Map()
+	this.flowers = new Map()
+	this.fragments = new Map()
 };
 
 Evobox.prototype = {
@@ -109,25 +111,14 @@ Evobox.prototype = {
 	    canvas.addEventListener('mouseleave',function(e){
 	    	mouseDown = false;
 	    });
-
-	    this.animations = {
-	    	'creature': {
-	    		'move': []
-	    	}
-	    }
-	    for (var i = 0; i <= 60; i++ ) {
-	    	if (i < 10) {
-	    		this.animations.creature.move.push('goat/move/lemmling-Cartoon-goat.000' + i + '.png')
-	    	} else {
-	    		this.animations.creature.move.push('goat/move/lemmling-Cartoon-goat.00' + i + '.png')
-	    	}
-	    }
-
-	    this.connect()
+	},
+	update: function() {
+		this.connect()
 	},
 	render: function() {
+		this.game.debug.text(this.game.time.fps + 'FPS' || '-- FPS', 2, 14, "#ffffff");
 		this.game.debug.cameraInfo(this.game.camera, 2, 32);
-	 	this.game.debug.text(this.game.time.fps + 'FPS' || '-- FPS', 2, 14, "#ffffff");   
+	 	this.game.debug.inputInfo(2, 115);
 	},
 	onOpen: function()   {
 		console.log("send connect");
@@ -142,10 +133,14 @@ Evobox.prototype = {
 		console.log(msg);
 		switch(msg.Action) {
 			case "load-world":
-				this.evobox.loadWorld(msg.Data)
+				// we need to wait here for w while because it might happen otherwise, that nothing is seen.
+				var self = this
+				setTimeout(function(){
+				    self.evobox.loadWorld(msg.Data)
+				}, 500);
 				break;
-		    case "update-creatures":
-				this.evobox.updateCreatures(msg.Data)
+		    case "update-creature":
+				this.evobox.updateCreature(msg.Data)
 				break;
 			case "delete-creature":
 				this.evobox.deleteCreature(msg.Data)
@@ -163,7 +158,13 @@ Evobox.prototype = {
 
 		for (var i=0; i<raw_world.Creatures.length; i++) {
 			creature = raw_world.Creatures[i];
+			console.log(creature)
 			self.addCreature(creature)
+		}
+		for (var i=0; i<raw_world.Flowers.length; i++) {
+			flower = raw_world.Flowers[i];
+			console.log(flower)
+			self.addFlower(flower)
 		}
 		for (var i=0; i<raw_world.Plan.Fragments.length; i++) {
 			fragment = raw_world.Plan.Fragments[i];
@@ -176,34 +177,42 @@ Evobox.prototype = {
                 self.start()
             }
         });
-		$('#zoomin').click(function() {
-			self.world.world_map.zoomIn();
-		});
-		$('#zoomout').click(function() {
-			self.world.world_map.zoomOut();
-		});
+		// $('#zoomin').click(function() {
+		// 	self.world.world_map.zoomIn();
+		// });
+		// $('#zoomout').click(function() {
+		// 	self.world.world_map.zoomOut();
+		// });
         $('#reset').click(function() {
             self.reset()
         });
-        $('#spawn').click(function() {
-            self.spawn()
-        });
+        // $('#spawn').click(function() {
+        //     self.spawn()
+        // });
 	},
 	addFragment: function(fragment) {
 		fragment.sprite = this.game.add.sprite(fragment.X, fragment.Y, fragment.Sheet, fragment.Sprite);
+		this.fragments.set(fragment.Id, fragment)
 	},
-	updateCreatures: function(raw_creatures) {
-		for (var i=0; i<raw_creatures.length; i++) {
-			raw_creature = raw_creatures[i];
-			creature = this.creatures.get(raw_creature.Id);
-			if (raw_creature.X != creature.X || raw_creature.Y != creature.Y) {
-				this.moveCreature(creature, {x: raw_creature.X, y: raw_creature.Y});
+	updateCreature: function(raw_creature) {
+		creature = this.creatures.get(raw_creature.Id);
+		if (raw_creature.X != creature.X || raw_creature.Y != creature.Y) {
+			this.moveCreature(creature, {x: raw_creature.X, y: raw_creature.Y});
+		}
+		for (var attrname in raw_creature) {
+			creature[attrname] = raw_creature[attrname];
+		}
+		this.creatures.set(creature.Id, creature);
+		this.table.row('#' + creature.DT_RowId).data(creature)
+	},
+	updateFlowers: function(raw_flowers) {
+		for (var i=0; i<raw_flowers.length; i++) {
+			flower = raw_flowers[i]
+			for (var attrname in raw_flowers[i]) {
+				flower[attrname] = flower[attrname];
 			}
-			for (var attrname in raw_creature) {
-				creature[attrname] = raw_creature[attrname];
-			}
-			this.creatures.set(creature.Id, creature);
-			this.table.row('#' + creature.DT_RowId).data(creature)
+			this.flowers.set(flower.Id, flower);
+			// this.table.row('#' + creature.DT_RowId).data(creature)
 		}
 	},
 	addCreature: function(creature) {
@@ -220,6 +229,17 @@ Evobox.prototype = {
 		this.table.row.add(creature).draw();
 		this.creatures.set(creature.Id, creature);
 		$("#creature-count").text(this.creatures.size.toString());
+	},
+	addFlower: function(flower) {
+		flower.sprite = this.game.add.sprite(flower.X, flower.Y, flower.Sheet, flower.Sprite);
+		flower.sprite.anchor.setTo(0.5, 0.5);
+		console.log("flower added")
+		console.log(flower)
+
+		flower.DT_RowId = "flower-id-" + flower.Id;
+		// this.table.row.add(creature).draw();
+		this.flowers.set(flower.Id, flower);
+		// $("#creature-count").text(this.creatures.size.toString());
 	},
 	moveCreature: function(creature, p) {
 		if (creature.sprite.isTweening) {
@@ -244,12 +264,20 @@ Evobox.prototype = {
 		this.creatures.delete(creature);
 		$("#creature-count").text(this.creatures.size.toString());
 	},
-	deleteCreatures: function() {
+	deleteEverything: function() {
+		this.fragments.forEach(function(v,k,m){
+			v.sprite.destroy();
+		});
 		this.creatures.forEach(function(v,k,m){
+			v.sprite.destroy();
+		});
+		this.flowers.forEach(function(v,k,m){
 			v.sprite.destroy();
 		});
 		this.table.clear().draw()
 		this.creatures.clear()
+		this.fragments.clear()
+		this.flowers.clear()
 		$("#creature-count").text(this.creatures.size.toString());
 	},
 	start: function() {
@@ -261,7 +289,7 @@ Evobox.prototype = {
 		this.server.send(JSON.stringify(msg));
 	},
 	reset: function() {
-		this.deleteCreatures();
+		this.deleteEverything();
 		msg = {"Action": "Reset", "Data": ReadSettings()}
 		this.server.send(JSON.stringify(msg));
 		$('#player').bootstrapToggle('on')

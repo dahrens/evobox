@@ -2,7 +2,6 @@ package evolution
 
 import (
 	"github.com/Pallinder/go-randomdata"
-	"log"
 )
 
 type Gender string
@@ -155,13 +154,15 @@ func (self *Creature) move() {
 	case 3:
 		newY += 64
 	default:
-		log.Println("idle")
+		return
 	}
 	req := new(PostRequest)
 	req.obj = self
 	req.x = newX
 	req.y = newY
 	self.world.Requests <- req
+	// TODO: wait for OK?
+	self.client.Write(NewMessage("update-creature", self))
 }
 
 type Creatures []*Creature
