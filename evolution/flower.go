@@ -55,7 +55,9 @@ func (flower *Flower) Evolve(world *World) {
 	flower.world = world
 	for tick := range flower.pulse {
 		flower.Age = tick.Count - flower.Birth
+		flower.NutritionalValue += 0.2
 		tick.Wait.Done()
+		flower.world.Client.Write(NewMessage("update-flower", flower))
 	}
 }
 

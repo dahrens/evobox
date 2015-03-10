@@ -10,21 +10,35 @@ var Evobox = function(game){
 	this.min_scale = 0.1
 	this.max_scale = 10
 	this.cur_scale = 1
+	this.fragment_counter = 0
 	
-	this.table = $('#creatures').DataTable({
+	this.creature_table = $('#creatures').DataTable({
 		"searching": false,
 		"aLengthMenu": [[10, 30, 50], [30, 30, 50]],
 		"columns": [
 			{ "data": "Name" },
-            { "data": "Gender" },
-            { "data": "Age" },
-            { "data": "Health" },
-            { "data": "Libido" },
-            { "data": "Hunger" },
-            { "data": "X" },
-            { "data": "Y" },
-        ]
-    });
+			{ "data": "Gender" },
+			{ "data": "Age" },
+			{ "data": "Birth"},
+			{ "data": "Health" },
+			{ "data": "Libido" },
+			{ "data": "Hunger" },
+			{ "data": "X" },
+			{ "data": "Y" },
+		]
+	});
+
+	this.flower_table = $('#flowers').DataTable({
+		"searching": false,
+		"aLengthMenu": [[10, 30, 50], [30, 30, 50]],
+		"columns": [
+		 	{ "data": "NutritionalValue" },
+		 	{ "data": "Age" },
+			{ "data": "Birth"},
+			{ "data": "X" },
+			{ "data": "Y" },
+		]
+	});
 
 	this.connected = false
 	this.creatures = new Map()
@@ -121,7 +135,6 @@ Evobox.prototype = {
 	 	this.game.debug.inputInfo(2, 115);
 	},
 	onOpen: function()   {
-		console.log("send connect");
 		msg = {"Action": "Connect", "Data": ReadSettings()};
 		this.send(JSON.stringify(msg));
 	},
@@ -130,10 +143,10 @@ Evobox.prototype = {
 	},
 	onMessage: function(raw_msg) {
 		var msg = JSON.parse(raw_msg.data);
-		console.log(msg);
 		switch(msg.Action) {
 			case "load-world":
 				// we need to wait here for w while because it might happen otherwise, that nothing is seen.
+				// TODO: fix this - cause its a weired world around for something i actually dont get...
 				var self = this
 				setTimeout(function(){
 				    self.evobox.loadWorld(msg.Data)
@@ -141,6 +154,9 @@ Evobox.prototype = {
 				break;
 		    case "update-creature":
 				this.evobox.updateCreature(msg.Data)
+				break;
+			case "update-flower":
+				this.evobox.updateFlower(msg.Data)
 				break;
 			case "delete-creature":
 				this.evobox.deleteCreature(msg.Data)
@@ -156,19 +172,17 @@ Evobox.prototype = {
 	loadWorld: function(raw_world) {
 		var self = this
 
-		for (var i=0; i<raw_world.Creatures.length; i++) {
-			creature = raw_world.Creatures[i];
-			console.log(creature)
-			self.addCreature(creature)
-		}
-		for (var i=0; i<raw_world.Flowers.length; i++) {
-			flower = raw_world.Flowers[i];
-			console.log(flower)
-			self.addFlower(flower)
-		}
 		for (var i=0; i<raw_world.Plan.Fragments.length; i++) {
 			fragment = raw_world.Plan.Fragments[i];
 			self.addFragment(fragment)
+		}
+		for (var i=0; i<raw_world.Flowers.length; i++) {
+			flower = raw_world.Flowers[i];
+			self.addFlower(flower)
+		}
+		for (var i=0; i<raw_world.Creatures.length; i++) {
+			creature = raw_world.Creatures[i];
+			self.addCreature(creature)
 		}
 		$('#player').change(function() {
             if ($(this).prop('checked')) {
@@ -192,6 +206,8 @@ Evobox.prototype = {
 	},
 	addFragment: function(fragment) {
 		fragment.sprite = this.game.add.sprite(fragment.X, fragment.Y, fragment.Sheet, fragment.Sprite);
+		fragment.Id = this.fragment_counter
+		this.fragment_counter++
 		this.fragments.set(fragment.Id, fragment)
 	},
 	updateCreature: function(raw_creature) {
@@ -203,17 +219,15 @@ Evobox.prototype = {
 			creature[attrname] = raw_creature[attrname];
 		}
 		this.creatures.set(creature.Id, creature);
-		this.table.row('#' + creature.DT_RowId).data(creature)
+		this.creature_table.row('#' + creature.DT_RowId).data(creature)
 	},
-	updateFlowers: function(raw_flowers) {
-		for (var i=0; i<raw_flowers.length; i++) {
-			flower = raw_flowers[i]
-			for (var attrname in raw_flowers[i]) {
-				flower[attrname] = flower[attrname];
-			}
-			this.flowers.set(flower.Id, flower);
-			// this.table.row('#' + creature.DT_RowId).data(creature)
+	updateFlower: function(raw_flower) {
+		flower = this.flowers.get(raw_flower.Id);
+		for (var attrname in raw_flower) {
+			flower[attrname] = raw_flower[attrname];
 		}
+		this.flowers.set(flower.Id, flower);
+		this.flower_table.row('#' + flower.DT_RowId).data(flower)
 	},
 	addCreature: function(creature) {
 		creature.sprite = this.game.add.sprite(creature.X, creature.Y, 'default', 'creature/creature.png');
@@ -226,20 +240,18 @@ Evobox.prototype = {
 		creature.sprite.anchor.setTo(0.5, 0.5);
 
 		creature.DT_RowId = "creature-id-" + creature.Id;
-		this.table.row.add(creature).draw();
+		this.creature_table.row.add(creature).draw();
 		this.creatures.set(creature.Id, creature);
 		$("#creature-count").text(this.creatures.size.toString());
 	},
 	addFlower: function(flower) {
 		flower.sprite = this.game.add.sprite(flower.X, flower.Y, flower.Sheet, flower.Sprite);
 		flower.sprite.anchor.setTo(0.5, 0.5);
-		console.log("flower added")
-		console.log(flower)
 
 		flower.DT_RowId = "flower-id-" + flower.Id;
-		// this.table.row.add(creature).draw();
+		this.flower_table.row.add(flower).draw();
 		this.flowers.set(flower.Id, flower);
-		// $("#creature-count").text(this.creatures.size.toString());
+		$("#flower-count").text(this.flowers.size.toString());
 	},
 	moveCreature: function(creature, p) {
 		if (creature.sprite.isTweening) {
@@ -260,8 +272,8 @@ Evobox.prototype = {
 	deleteCreature: function(raw_creature) {
 		creature = this.creatures.get(raw_creature.Id);
 		creature.sprite.destroy();
-		this.table.row('#' + creature.DT_RowId).remove().draw();
-		this.creatures.delete(creature);
+		this.creature_table.row('#' + creature.DT_RowId).remove().draw();
+		this.creatures.delete(creature.Id);
 		$("#creature-count").text(this.creatures.size.toString());
 	},
 	deleteEverything: function() {
@@ -274,11 +286,13 @@ Evobox.prototype = {
 		this.flowers.forEach(function(v,k,m){
 			v.sprite.destroy();
 		});
-		this.table.clear().draw()
+		this.creature_table.clear().draw()
+		this.flower_table.clear().draw()
 		this.creatures.clear()
 		this.fragments.clear()
 		this.flowers.clear()
 		$("#creature-count").text(this.creatures.size.toString());
+		$("#flower-count").text(this.flowers.size.toString());
 	},
 	start: function() {
 		msg = {"Action": "Start", "Data": []}

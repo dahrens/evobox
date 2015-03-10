@@ -97,6 +97,7 @@ func (world *World) Reset(tick_interval, map_width, map_height int) {
 	}
 	world.Evolvers = make(Evolvers, 0)
 	world.Creatures = make(Creatures, 0)
+	world.Flowers = make(Flowers, 0)
 	world.Plan = NewPlan(map_width, map_height, world)
 }
 

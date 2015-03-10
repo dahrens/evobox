@@ -66,6 +66,7 @@ func (self *Creature) Evolve(world *World) {
 		self.calculateHealth()
 		self.move()
 		tick.Wait.Done()
+		self.client.Write(NewMessage("update-creature", self))
 		if self.Health == 0 {
 			break
 		}
@@ -161,8 +162,6 @@ func (self *Creature) move() {
 	req.x = newX
 	req.y = newY
 	self.world.Requests <- req
-	// TODO: wait for OK?
-	self.client.Write(NewMessage("update-creature", self))
 }
 
 type Creatures []*Creature

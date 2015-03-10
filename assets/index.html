@@ -15,9 +15,13 @@
         display: table;
         table-layout: fixed;
     }
+    .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {
+        background-color: #333333;
+    }
     #creatures,
+    #flowers,
     #settings,
-    #information {
+    .information {
         background-color: #333333;
         color: #515151;
     }
@@ -29,6 +33,12 @@
     }
     .creature-icon {
         background: url(sprites/default/creature/creature.png) center left no-repeat;
+    }
+    .flowers-icon {
+        background: url(sprites/default/flowers.png) center left no-repeat;
+    }
+    .flowers-icon span.badge {
+        margin-left: 32px;
     }
     .creature-icon span.badge {
         margin-left: 22px;
@@ -61,16 +71,33 @@
                 <ul class="nav navbar-nav">
                     <li class="dropdown mega-dropdown">
                         <a href="#" class="dropdown-toggle creature-icon" role="button" aria-expanded="false"><span class=""></span><span id="creature-count" class="badge">0</span></a>
-                        <div id="information" class="dropdown-menu mega-dropdown-menu" role="menu">
+                        <div class="dropdown-menu mega-dropdown-menu information" role="menu">
                             <table id="creatures" class="display" cellspacing="0" width="800px">
                                 <thead>
                                     <tr>
                                         <th>Name</th>
                                         <th>Gender</th>
                                         <th>Age</th>
+                                        <th>Birth</th>
                                         <th>Health</th>
                                         <th>Libido</th>
                                         <th>Hunger</th>
+                                        <th>X</th>
+                                        <th>Y</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        <div>
+                    </li>
+                    <li class="dropdown mega-dropdown">
+                        <a href="#" class="dropdown-toggle flowers-icon" role="button" aria-expanded="false"><span class=""></span><span id="flower-count" class="badge">0</span></a>
+                        <div class="dropdown-menu mega-dropdown-menu information" role="menu">
+                            <table id="flowers" class="display" cellspacing="0" width="800px">
+                                <thead>
+                                    <tr>
+                                        <th>NutritionalValue</th>
+                                        <th>Age</th>
+                                        <th>Birth</th>
                                         <th>X</th>
                                         <th>Y</th>
                                     </tr>
@@ -85,11 +112,11 @@
                         <div id="settings" class="dropdown-menu mega-dropdown-menu" role="menu">
                             <div class="input-group setting">
                                 <span class="input-group-addon setting-label" id="settings-1">initial creatures</span>
-                                <input name="initial_creatures" type="text" class="form-control" value="10" aria-describedby="settings-1">
+                                <input name="initial_creatures" type="text" class="form-control" value="20" aria-describedby="settings-1">
                             </div>
                             <div class="input-group setting">
                                 <span class="input-group-addon setting-label" id="settings-1">initial flowers</span>
-                                <input name="initial_flowers" type="text" class="form-control" value="120" aria-describedby="settings-1">
+                                <input name="initial_flowers" type="text" class="form-control" value="60" aria-describedby="settings-1">
                             </div>
                             <div class="input-group setting">
                                 <span class="input-group-addon" id="settings-2">tick interval</span>
