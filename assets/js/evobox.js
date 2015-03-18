@@ -60,12 +60,14 @@ Evobox.prototype = {
 		this.game.time.advancedTiming = true;
 		this.game.world.setBounds(0, 0, 2048, 2048);
 
+		this.game.stage.backgroundColor = '#35482b';
+
 			// change initial camera position
 		this.game.camera.x = 100;
 		this.game.camera.y = 100;
 
-		back = this.game.add.sprite(0, 0, 'default', 'island.png');
-		back.scale.set(this.cur_scale);
+		// back = this.game.add.sprite(0, 0, 'default', 'plain.png');
+		// back.scale.set(this.cur_scale);
 
 		this.flower_group = this.game.add.group();
 		this.creature_group = this.game.add.group();

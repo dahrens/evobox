@@ -1,11 +1,5 @@
 package evolution
 
-// import (
-// 	"bytes"
-// 	"image"
-// 	"log"
-// )
-
 const (
 	WOODS = 8
 	TREES = 10
@@ -78,29 +72,6 @@ func NewPlan(w, h int, world *World) *Plan {
 }
 
 func (plan *Plan) generateStaticFragments(w, h int) {
-	// data, err := Asset("assets/experiment/island-black.jpeg")
-	// if err != nil {
-	// 	log.Println(err)
-	// 	panic("can not load image")
-	// }
-	// reader := bytes.NewReader(data)
-	// img, _, err := image.Decode(reader)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	panic("can not decode image")
-	// }
-	// bounds := img.Bounds()
-	// for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-	// 	for x := bounds.Min.X; x < bounds.Max.X; x++ {
-	// 		r, g, b, a := img.At(x, y).RGBA()
-	// 		log.Println(r)
-	// 		log.Println(g)
-	// 		log.Println(b)
-	// 		log.Println(a)
-	// 		plan._m[x][y] = NewCoordinate(x, y, true)
-	// 	}
-	// }
-
 	for i := 0; i < WOODS; i++ {
 		init_x := random(120, 1800)
 		start_x := init_x
