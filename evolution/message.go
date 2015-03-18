@@ -1,7 +1,6 @@
 package evolution
 
 import "strconv"
-import "log"
 
 type Message struct {
 	Action string
@@ -33,11 +32,10 @@ func DispatchIncomingMessage(msg *Message, c *Client) {
 func handleConnect(data interface{}, c *Client) {
 	initial_creatures, _ := strconv.Atoi(data.(map[string]interface{})["initial_creatures"].(string))
 	initial_flowers, _ := strconv.Atoi(data.(map[string]interface{})["initial_flowers"].(string))
-	log.Println(initial_flowers)
 	tick_interval, _ := strconv.Atoi(data.(map[string]interface{})["tick_interval"].(string))
 	c.World.Reset(tick_interval, 2048, 2048)
-	c.World.Init(initial_creatures, initial_flowers)
 	c.Write(NewMessage("load-world", c.World))
+	c.World.Init(initial_creatures, initial_flowers)
 }
 
 func handleSpawn(data interface{}, c *Client) {

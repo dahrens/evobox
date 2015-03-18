@@ -186,6 +186,8 @@ func (world *World) handleDelete(req *DeleteRequest) {
 	switch o := req.Obj().(type) {
 	case *Creature:
 		world.removeCreature(o)
+	case *Flower:
+		world.removeFlower(o)
 	}
 }
 
@@ -199,6 +201,18 @@ func (world *World) removeCreature(creature *Creature) {
 	}
 	world.Creatures[i] = nil
 	world.Creatures = append(world.Creatures[:i], world.Creatures[i+1:]...)
+}
+
+func (world *World) removeFlower(flower *Flower) {
+	var i int
+	var t *Flower
+	for i, t = range world.Flowers {
+		if t == flower {
+			break
+		}
+	}
+	world.Flowers[i] = nil
+	world.Flowers = append(world.Flowers[:i], world.Flowers[i+1:]...)
 }
 
 type Request struct {

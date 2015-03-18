@@ -22,15 +22,10 @@ Preload.prototype = {
 	},
 
 	create: function () {
-
 		this.game.add.tween(this.preloadBar).to( { angle: 360 }, 2000, Phaser.Easing.Linear.None, true).loop(true);
-    },
-
-	update: function () {
 		var self = this
 		setTimeout(function() {
 			self.state.start('Evobox');
 		},100);
-		
-	}
+    }
 }

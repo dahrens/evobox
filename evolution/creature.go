@@ -9,7 +9,7 @@ type Gender string
 const (
 	GENDER_MALE     Gender = "M"
 	GENDER_FEMALE   Gender = "F"
-	HUNGER_PER_TICK        = 0.5
+	HUNGER_PER_TICK        = 0.1
 	LIBIDO_PER_TICK        = 0.1
 )
 
@@ -59,6 +59,7 @@ func NewCreature(health float32, gender Gender, client *Client) *Creature {
 func (self *Creature) Evolve(world *World) {
 	self.alive = true
 	self.world = world
+	self.world.Client.Write(NewMessage("add-creature", self))
 	for tick := range self.pulse {
 		self.Age = tick.Count - self.Birth
 		self.calculateLibido()

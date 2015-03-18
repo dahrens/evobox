@@ -11,7 +11,7 @@ var Evobox = function(game){
 	this.max_scale = 10
 	this.cur_scale = 1
 	this.fragment_counter = 0
-	
+
 	this.creature_table = $('#creatures').DataTable({
 		"searching": false,
 		"aLengthMenu": [[10, 30, 50], [30, 30, 50]],
@@ -40,7 +40,6 @@ var Evobox = function(game){
 		]
 	});
 
-	this.connected = false
 	this.creatures = new Map()
 	this.flowers = new Map()
 	this.fragments = new Map()
@@ -48,32 +47,32 @@ var Evobox = function(game){
 
 Evobox.prototype = {
 	connect: function() {
-		if (!this.connected) {
-			this.server = new WebSocket("ws://localhost:8080/connect");
-			this.server.evobox = this
-			this.server.onopen = this.onOpen
-			this.server.onerror = this.onError
-			this.server.onmessage = this.onMessage
-			this.server.onclose = this.onClose
-			this.connected = true
-			this.initialized = false
-		}
+		this.server = new WebSocket("ws://localhost:8080/connect");
+		this.server.evobox = this
+		this.server.onopen = this.onOpen
+		this.server.onerror = this.onError
+		this.server.onmessage = this.onMessage
+		this.server.onclose = this.onClose
+		this.initialized = false
 	},
 	create: function() {
 			// finally set up the game sceene
 		this.game.time.advancedTiming = true;
-	    this.game.world.setBounds(0, 0, 2048, 2048);
+		this.game.world.setBounds(0, 0, 2048, 2048);
 
-	    	// change initial camera position
-	    this.game.camera.x = 100;
-	    this.game.camera.y = 100;
+			// change initial camera position
+		this.game.camera.x = 100;
+		this.game.camera.y = 100;
 
-	    back = this.game.add.sprite(0, 0, 'default', 'island.png');
-	    back.scale.set(this.cur_scale);
+		back = this.game.add.sprite(0, 0, 'default', 'island.png');
+		back.scale.set(this.cur_scale);
 
-	    this.game.input.mouse.mouseWheelCallback = mouseWheel;
+		this.flower_group = this.game.add.group();
+		this.creature_group = this.game.add.group();
 
-	    var self = this
+		this.game.input.mouse.mouseWheelCallback = mouseWheel;
+
+		var self = this
 		function mouseWheel(event) {
 			if (self.game.input.mouse.wheelDelta == 1) {
 				// zoom in
@@ -86,47 +85,46 @@ Evobox.prototype = {
 			self.game.world.setBounds(0, 0, self.game.world._width * self.cur_scale, self.game.world._height * self.cur_scale);
 		}
 
-	    var canvas = window.document.getElementsByTagName('canvas')[0],
-        prevX = 0, prevY = 0, mouseDown = false;
-    
-	    canvas.addEventListener('touchstart',function(e){
-	    	prevX = e.changedTouches[0].screenX;
-	        prevY = e.changedTouches[0].screenY;
-	    });
-	    
-	    canvas.addEventListener('mousedown',function(e){
-	    	mouseDown = true;
-	    	prevX = e.screenX;
-	        prevY = e.screenY;
-	    });
-	    
-	    canvas.addEventListener('touchmove',function(e){
-	    	e.preventDefault();
-	    	self.game.camera.x+= prevX - e.changedTouches[0].screenX;
-	    	prevX = e.changedTouches[0].screenX;
-	        self.game.camera.y+= prevY - e.changedTouches[0].screenY;
-	        prevY = e.changedTouches[0].screenY;
-	    });
-	    
-	    canvas.addEventListener('mousemove',function(e){
-	    	if(mouseDown){
-		    	e.preventDefault();
-		    	self.game.camera.x += prevX - e.screenX;
-		    	prevX = e.screenX;
-		        self.game.camera.y += prevY - e.screenY;
-		        prevY = e.screenY;
-		    }
-	    });
-	    
-	    canvas.addEventListener('mouseup',function(e){
-	    	mouseDown = false;
-	    });
-	    
-	    canvas.addEventListener('mouseleave',function(e){
-	    	mouseDown = false;
-	    });
-	},
-	update: function() {
+		var canvas = window.document.getElementsByTagName('canvas')[0],
+		prevX = 0, prevY = 0, mouseDown = false;
+
+		canvas.addEventListener('touchstart',function(e){
+			prevX = e.changedTouches[0].screenX;
+			prevY = e.changedTouches[0].screenY;
+		});
+
+		canvas.addEventListener('mousedown',function(e){
+			mouseDown = true;
+			prevX = e.screenX;
+			prevY = e.screenY;
+		});
+
+		canvas.addEventListener('touchmove',function(e){
+			e.preventDefault();
+			self.game.camera.x+= prevX - e.changedTouches[0].screenX;
+			prevX = e.changedTouches[0].screenX;
+			self.game.camera.y+= prevY - e.changedTouches[0].screenY;
+			prevY = e.changedTouches[0].screenY;
+		});
+
+		canvas.addEventListener('mousemove',function(e){
+			if(mouseDown){
+				e.preventDefault();
+				self.game.camera.x += prevX - e.screenX;
+				prevX = e.screenX;
+				self.game.camera.y += prevY - e.screenY;
+				prevY = e.screenY;
+			}
+		});
+
+		canvas.addEventListener('mouseup',function(e){
+			mouseDown = false;
+		});
+
+		canvas.addEventListener('mouseleave',function(e){
+			mouseDown = false;
+		});
+
 		this.connect()
 	},
 	render: function() {
@@ -145,12 +143,13 @@ Evobox.prototype = {
 		var msg = JSON.parse(raw_msg.data);
 		switch(msg.Action) {
 			case "load-world":
-				// we need to wait here for w while because it might happen otherwise, that nothing is seen.
-				// TODO: fix this - cause its a weired world around for something i actually dont get...
-				var self = this
-				setTimeout(function(){
-				    self.evobox.loadWorld(msg.Data)
-				}, 500);
+				this.evobox.loadWorld(msg.Data)
+				break;
+			case "add-creature":
+				this.evobox.addCreature(msg.Data)
+				break;
+			case "add-flower":
+				this.evobox.addFlower(msg.Data)
 				break;
 		    case "update-creature":
 				this.evobox.updateCreature(msg.Data)
@@ -160,6 +159,9 @@ Evobox.prototype = {
 				break;
 			case "delete-creature":
 				this.evobox.deleteCreature(msg.Data)
+				break;
+			case "delete-flower":
+				this.evobox.deleteFlower(msg.Data)
 				break;
 			case "add-creature":
 				this.evobox.addCreature(msg.Data)
@@ -175,14 +177,6 @@ Evobox.prototype = {
 		for (var i=0; i<raw_world.Plan.Fragments.length; i++) {
 			fragment = raw_world.Plan.Fragments[i];
 			self.addFragment(fragment)
-		}
-		for (var i=0; i<raw_world.Flowers.length; i++) {
-			flower = raw_world.Flowers[i];
-			self.addFlower(flower)
-		}
-		for (var i=0; i<raw_world.Creatures.length; i++) {
-			creature = raw_world.Creatures[i];
-			self.addCreature(creature)
 		}
 		$('#player').change(function() {
             if ($(this).prop('checked')) {
@@ -243,6 +237,8 @@ Evobox.prototype = {
 		this.creature_table.row.add(creature).draw();
 		this.creatures.set(creature.Id, creature);
 		$("#creature-count").text(this.creatures.size.toString());
+		this.creature_group.add(creature.sprite);
+		creature.sprite.bringToTop();
 	},
 	addFlower: function(flower) {
 		flower.sprite = this.game.add.sprite(flower.X, flower.Y, flower.Sheet, flower.Sprite);
@@ -252,6 +248,8 @@ Evobox.prototype = {
 		this.flower_table.row.add(flower).draw();
 		this.flowers.set(flower.Id, flower);
 		$("#flower-count").text(this.flowers.size.toString());
+		this.flower_group.add(flower.sprite);
+		flower.sprite.bringToTop()
 	},
 	moveCreature: function(creature, p) {
 		if (creature.sprite.isTweening) {
@@ -275,6 +273,13 @@ Evobox.prototype = {
 		this.creature_table.row('#' + creature.DT_RowId).remove().draw();
 		this.creatures.delete(creature.Id);
 		$("#creature-count").text(this.creatures.size.toString());
+	},
+	deleteFlower: function(raw_flower) {
+		flower = this.flowers.get(raw_flower.Id);
+		flower.sprite.destroy();
+		this.flower_table.row('#' + flower.DT_RowId).remove().draw();
+		this.flowers.delete(flower.Id);
+		$("#flower-count").text(this.flowers.size.toString());
 	},
 	deleteEverything: function() {
 		this.fragments.forEach(function(v,k,m){
