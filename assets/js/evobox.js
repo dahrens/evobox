@@ -125,6 +125,26 @@ Evobox.prototype = {
 			mouseDown = false;
 		});
 
+		$('#player').change(function() {
+			if ($(this).prop('checked')) {
+				self.pause()
+			} else {
+				self.start()
+			}
+		});
+		$('#zoomin').click(function() {
+			self.world.world_map.zoomIn();
+		});
+		$('#zoomout').click(function() {
+			self.world.world_map.zoomOut();
+		});
+		$('#reset').click(function() {
+			self.reset()
+		});
+		$('#spawn').click(function() {
+		    self.spawn()
+		});
+
 		this.connect()
 	},
 	render: function() {
@@ -173,30 +193,10 @@ Evobox.prototype = {
 	},
 	loadWorld: function(raw_world) {
 		var self = this
-
 		for (var i=0; i<raw_world.Plan.Fragments.length; i++) {
 			fragment = raw_world.Plan.Fragments[i];
 			self.addFragment(fragment)
 		}
-		$('#player').change(function() {
-            if ($(this).prop('checked')) {
-                self.pause()
-            } else {
-                self.start()
-            }
-        });
-		// $('#zoomin').click(function() {
-		// 	self.world.world_map.zoomIn();
-		// });
-		// $('#zoomout').click(function() {
-		// 	self.world.world_map.zoomOut();
-		// });
-        $('#reset').click(function() {
-            self.reset()
-        });
-        // $('#spawn').click(function() {
-        //     self.spawn()
-        // });
 	},
 	addFragment: function(fragment) {
 		fragment.sprite = this.game.add.sprite(fragment.X, fragment.Y, fragment.Sheet, fragment.Sprite);

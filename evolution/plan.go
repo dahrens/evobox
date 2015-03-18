@@ -7,9 +7,8 @@ package evolution
 // )
 
 const (
-	WOODS   = 8
-	TREES   = 10
-	FLOWERS = 150
+	WOODS = 8
+	TREES = 10
 )
 
 type Coordinate struct {

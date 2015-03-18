@@ -1,7 +1,6 @@
 package evolution
 
 import (
-	"log"
 	"math/rand"
 )
 
