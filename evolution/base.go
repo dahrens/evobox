@@ -26,6 +26,11 @@ type Anchor struct {
 	Y float32
 }
 
+type Placeable struct {
+	Sprite string
+	Sheet  string
+}
+
 type Fragment struct {
 	Point
 	Size
@@ -48,6 +53,7 @@ type Fragmenter interface {
 	GetH() int
 	SetW(int)
 	SetH(int)
+	Collides() bool
 }
 
 type Evolver interface {

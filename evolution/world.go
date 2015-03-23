@@ -13,18 +13,16 @@ type Requester interface {
 }
 
 type World struct {
-	W         int
-	H         int
-	Evolvers  Evolvers `json:"-"`
-	Flowers   Flowers
-	Creatures Creatures
-	Requests  chan Requester `json:"-"`
-	Clock     *time.Ticker   `json:"-"`
-	Tick      int
-	Speed     time.Duration
-	Plan      *Plan
-	Client    *Client `json:"-"`
-	running   bool
+	W        int
+	H        int
+	Evolvers Evolvers       `json:"-"`
+	Requests chan Requester `json:"-"`
+	Clock    *time.Ticker   `json:"-"`
+	Tick     int
+	Speed    time.Duration
+	Plan     *Plan
+	Client   *Client `json:"-"`
+	running  bool
 }
 
 func NewWorld(w, h int, client *Client) *World {
@@ -32,8 +30,6 @@ func NewWorld(w, h int, client *Client) *World {
 	world.W = w
 	world.H = h
 	world.Evolvers = make(Evolvers, 0)
-	world.Creatures = make(Creatures, 0)
-	world.Flowers = make(Flowers, 0)
 	world.Requests = make(chan Requester)
 	world.Speed = 400 * time.Millisecond
 	world.Clock = time.NewTicker(world.Speed)
@@ -96,8 +92,6 @@ func (world *World) Reset(tick_interval, map_width, map_height int) {
 		world.Clock = time.NewTicker(world.Speed)
 	}
 	world.Evolvers = make(Evolvers, 0)
-	world.Creatures = make(Creatures, 0)
-	world.Flowers = make(Flowers, 0)
 	world.Plan = NewPlan(map_width, map_height, world)
 }
 
@@ -126,15 +120,6 @@ func (world *World) pulse() {
 }
 
 func (world *World) handle(req Requester) {
-	// this checks should move somewhere else....
-	if req.X() <= -1 || req.X() >= world.W {
-		log.Printf("Out of bounds x %d reject request!", req.X())
-		return
-	}
-	if req.Y() <= -1 || req.Y() >= world.H {
-		log.Printf("Out of bounds y %d reject request!", req.Y())
-		return
-	}
 	// dispatch requests base on their type to the corresponding handler.
 	switch r := req.(type) {
 	case *PutRequest:
@@ -147,30 +132,28 @@ func (world *World) handle(req Requester) {
 }
 
 func (world *World) handlePut(req *PutRequest) {
+	if !world.Plan.IsInside(req.X(), req.Y()) {
+		log.Println("Cannot Put this evolver because it is out of bounds")
+		return
+	}
 	if world.Evolvers.Contains(req.Obj()) {
-		log.Println("Cannot Put this evolvers because it is already inside... Use Post to update...")
+		log.Println("Cannot Put this evolver because it is already inside... Use Post to update...")
 		return
 	}
 	world.Evolvers = append(world.Evolvers, req.Obj())
-	switch o := req.Obj().(type) {
-	case *Creature:
-		world.Creatures = append(world.Creatures, o)
-		go o.Evolve(world)
-	case *Flower:
-		world.Flowers = append(world.Flowers, o)
-		go o.Evolve(world)
-	}
+	world.Plan.addFragment(req.Obj())
+	go req.Obj().Evolve(world)
 }
 
 func (world *World) handlePost(req *PostRequest) {
+	if !world.Plan.IsInside(req.X(), req.Y()) {
+		log.Println("Cannot Post this evolver because it is out of bounds")
+		return
+	}
 	if world.Evolvers.Contains(req.Obj()) == false {
 		world.handlePut(NewPutRequest(req.Obj()))
 	}
-	switch o := req.Obj().(type) {
-	case *Creature:
-		o.SetX(req.X())
-		o.SetY(req.Y())
-	}
+	world.Plan.updateFragment(req.Obj(), req.X(), req.Y())
 }
 
 func (world *World) handleDelete(req *DeleteRequest) {
@@ -183,36 +166,13 @@ func (world *World) handleDelete(req *DeleteRequest) {
 	}
 	world.Evolvers[i] = nil
 	world.Evolvers = append(world.Evolvers[:i], world.Evolvers[i+1:]...)
+	world.Plan.deleteFragment(req.Obj())
 	switch o := req.Obj().(type) {
-	case *Creature:
-		world.removeCreature(o)
 	case *Flower:
-		world.removeFlower(o)
+		world.Client.Write(NewMessage("delete-flower", o))
+	case *Creature:
+		world.Client.Write(NewMessage("delete-creature", o))
 	}
-}
-
-func (world *World) removeCreature(creature *Creature) {
-	var i int
-	var t *Creature
-	for i, t = range world.Creatures {
-		if t == creature {
-			break
-		}
-	}
-	world.Creatures[i] = nil
-	world.Creatures = append(world.Creatures[:i], world.Creatures[i+1:]...)
-}
-
-func (world *World) removeFlower(flower *Flower) {
-	var i int
-	var t *Flower
-	for i, t = range world.Flowers {
-		if t == flower {
-			break
-		}
-	}
-	world.Flowers[i] = nil
-	world.Flowers = append(world.Flowers[:i], world.Flowers[i+1:]...)
 }
 
 type Request struct {
@@ -254,7 +214,7 @@ type DeleteRequest struct {
 	Request
 }
 
-func NewDeleteRequest(obj Evolver, x, y int) *DeleteRequest {
+func NewDeleteRequest(obj Evolver) *DeleteRequest {
 	r := new(DeleteRequest)
 	r.obj = obj
 	return r

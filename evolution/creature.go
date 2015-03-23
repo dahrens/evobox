@@ -2,6 +2,7 @@ package evolution
 
 import (
 	"github.com/Pallinder/go-randomdata"
+	"log"
 )
 
 type Gender string
@@ -26,144 +27,224 @@ type Creature struct {
 	libido_max float32
 	alive      bool
 	Id         int
+	target     Evolver
 	client     *Client `json:"-"`
 	world      *World  `json:"-"`
 }
 
 func NewCreature(health float32, gender Gender, client *Client) *Creature {
-	c := new(Creature)
+	creature := new(Creature)
 	// Fragment values
-	c.X = client.Rand.Intn(client.World.W)
-	c.Y = client.Rand.Intn(client.World.H)
-	c.W = 32
-	c.H = 32
-	c.Birth = client.World.Tick
-	c.Age = 0
-	c.pulse = make(chan *Tick)
+	creature.X = client.Rand.Intn(client.World.W)
+	creature.Y = client.Rand.Intn(client.World.H)
+	creature.W = 32
+	creature.H = 32
+	creature.Birth = client.World.Tick
+	creature.Age = 0
+	creature.pulse = make(chan *Tick)
 	// Creature values
-	c.Name = randomdata.SillyName()
-	c.Health = health
-	c.Hunger = 5.0
-	c.Libido = 0.0
-	c.Sanity = 100.0
-	c.Speed = 32
-	c.Gender = gender
-	c.hunger_max = 10.0
-	c.libido_max = 10.0
-	c.alive = false
-	c.Id = client.AutoInc.Id()
-	c.client = client
-	return c
+	creature.Name = randomdata.SillyName()
+	creature.Health = health
+	creature.Hunger = 5.0
+	creature.Libido = 0.0
+	creature.Sanity = 100.0
+	creature.Speed = 10
+	creature.Gender = gender
+	creature.hunger_max = 10.0
+	creature.libido_max = 10.0
+	creature.alive = false
+	creature.Id = client.AutoInc.Id()
+	creature.client = client
+	creature.target = nil
+	return creature
 }
 
-func (self *Creature) Evolve(world *World) {
-	self.alive = true
-	self.world = world
-	self.world.Client.Write(NewMessage("add-creature", self))
-	for tick := range self.pulse {
-		self.Age = tick.Count - self.Birth
-		self.calculateLibido()
-		self.calculateHunger()
-		self.calculateHealth()
-		self.move()
+func (creature *Creature) Evolve(world *World) {
+	creature.alive = true
+	creature.world = world
+	creature.world.Client.Write(NewMessage("add-creature", creature))
+	for tick := range creature.pulse {
+		creature.Age = tick.Count - creature.Birth
+		creature.calculateLibido()
+		creature.calculateHunger()
+		creature.calculateHealth()
+		creature.act()
 		tick.Wait.Done()
-		self.client.Write(NewMessage("update-creature", self))
-		if self.Health == 0 {
+		creature.client.Write(NewMessage("update-creature", creature))
+		if creature.Health == 0 {
 			break
 		}
 	}
-	self.alive = false
-	world.Requests <- &DeleteRequest{Request{obj: self}}
-	self.client.Write(NewMessage("delete-creature", self))
-	self.world = nil
+	creature.alive = false
+	world.Requests <- &DeleteRequest{Request{obj: creature}}
+	creature.world = nil
 }
 
-func (self *Creature) calculateHunger() {
-	if self.Hunger < self.hunger_max {
-		self.Hunger = self.Hunger + HUNGER_PER_TICK
+func (creature *Creature) act() {
+	log.Println("act...")
+	picked := creature.pickFlower()
+	if picked {
+		creature.target = nil
+		return
 	}
-	if self.Hunger > self.hunger_max {
-		self.Hunger = self.hunger_max
+	if creature.target == nil {
+		flower := creature.searchFlower()
+		if flower != nil {
+			creature.target = flower
+		} else {
+			creature.moveRandom()
+		}
 	}
-}
-
-func (self *Creature) calculateLibido() {
-	if self.Libido < self.libido_max {
-		self.Libido = self.Libido + LIBIDO_PER_TICK
+	if creature.target != nil {
+		creature.moveTo(creature.target)
 	}
-	if self.Libido > self.libido_max {
-		self.Libido = self.libido_max
+
+	log.Println("act...done")
+}
+
+func (creature *Creature) pickFlower() bool {
+	picked := false
+	reach := creature.world.Plan.getFragmentsInCircle(creature.X, creature.Y, 50)
+PickFlower:
+	for i := 0; i < len(reach); i++ {
+		switch t := reach[i].(type) {
+		case *Flower:
+			creature.world.Requests <- &DeleteRequest{Request{obj: t}}
+			creature.Hunger = creature.Hunger - t.NutritionalValue
+			picked = true
+			break PickFlower
+		}
 	}
+	return picked
 }
 
-func (self *Creature) calculateHealth() {
-	if self.Hunger == self.hunger_max {
-		self.Health--
+func (creature *Creature) searchFlower() *Flower {
+	var flower *Flower
+	vision := creature.world.Plan.getFragmentsInCircle(creature.X, creature.Y, 200)
+SearchForFlower:
+	for j := 0; j < len(vision); j++ {
+		switch f := vision[j].(type) {
+		case *Flower:
+			flower = f
+			break SearchForFlower
+		}
 	}
+	return flower
 }
 
-func (self *Creature) GetX() int {
-	return self.X
-}
-
-func (self *Creature) SetX(x int) {
-	self.X = x
-}
-
-func (self *Creature) GetY() int {
-	return self.Y
-}
-
-func (self *Creature) SetY(y int) {
-	self.Y = y
-}
-
-func (self *Creature) GetW() int {
-	return self.W
-}
-
-func (self *Creature) SetW(w int) {
-	self.W = w
-}
-
-func (self *Creature) GetH() int {
-	return self.H
-}
-
-func (self *Creature) SetH(h int) {
-	self.H = h
-}
-
-func (self *Creature) Pulse() chan *Tick {
-	return self.pulse
-}
-
-func (self *Creature) Alive() bool {
-	return self.alive
-}
-
-func (self *Creature) move() {
-	coin := self.client.Rand.Intn(12)
-	newX := self.X
-	newY := self.Y
+func (creature *Creature) moveRandom() {
+	coin := creature.client.Rand.Intn(4)
+	newX := creature.X
+	newY := creature.Y
 	switch coin {
 	case 0:
-		newX -= 64
+		newX -= creature.Speed
 	case 1:
-		newX += 64
+		newX += creature.Speed
 	case 2:
-		newY -= 64
+		newY -= creature.Speed
 	case 3:
-		newY += 64
+		newY += creature.Speed
 	default:
 		return
 	}
 	req := new(PostRequest)
-	req.obj = self
+	req.obj = creature
 	req.x = newX
 	req.y = newY
-	self.world.Requests <- req
+	creature.client.World.Requests <- req
 }
+
+func (creature *Creature) moveTo(fragment Fragmenter) {
+	log.Println("move from %d %d to flower at (%d, %d)", creature.X, creature.Y, fragment.GetX(), fragment.GetY())
+	newX := creature.X
+	newY := creature.Y
+
+	if fragment.GetX() > creature.X+creature.Speed {
+		newX = creature.X + creature.Speed
+	}
+	if fragment.GetY() > creature.Y+creature.Speed {
+		newY = creature.Y + creature.Speed
+	}
+	if fragment.GetX() < creature.X-creature.Speed {
+		newX = creature.X - creature.Speed
+	}
+	if fragment.GetY() < creature.Y-creature.Speed {
+		newY = creature.Y - creature.Speed
+	}
+	log.Println("newx newy %d %d", newX, newY)
+	req := new(PostRequest)
+	req.obj = creature
+	req.x = newX
+	req.y = newY
+	creature.world.Requests <- req
+}
+
+func (creature *Creature) calculateHunger() {
+	if creature.Hunger < creature.hunger_max {
+		creature.Hunger = creature.Hunger + HUNGER_PER_TICK
+	}
+	if creature.Hunger > creature.hunger_max {
+		creature.Hunger = creature.hunger_max
+	}
+}
+
+func (creature *Creature) calculateLibido() {
+	if creature.Libido < creature.libido_max {
+		creature.Libido = creature.Libido + LIBIDO_PER_TICK
+	}
+	if creature.Libido > creature.libido_max {
+		creature.Libido = creature.libido_max
+	}
+}
+
+func (creature *Creature) calculateHealth() {
+	if creature.Hunger == creature.hunger_max {
+		creature.Health--
+	}
+}
+
+func (creature *Creature) GetX() int {
+	return creature.X
+}
+
+func (creature *Creature) SetX(x int) {
+	creature.X = x
+}
+
+func (creature *Creature) GetY() int {
+	return creature.Y
+}
+
+func (creature *Creature) SetY(y int) {
+	creature.Y = y
+}
+
+func (creature *Creature) GetW() int {
+	return creature.W
+}
+
+func (creature *Creature) SetW(w int) {
+	creature.W = w
+}
+
+func (creature *Creature) GetH() int {
+	return creature.H
+}
+
+func (creature *Creature) SetH(h int) {
+	creature.H = h
+}
+
+func (creature *Creature) Pulse() chan *Tick {
+	return creature.pulse
+}
+
+func (creature *Creature) Alive() bool {
+	return creature.alive
+}
+
+func (creature *Creature) Collides() bool { return true }
 
 type Creatures []*Creature
 

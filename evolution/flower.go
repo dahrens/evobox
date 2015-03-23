@@ -14,6 +14,7 @@ type Flower struct {
 	world            *World `json:"-"`
 	alive            bool
 	Id               int
+	ambit            chan []Fragmenter
 }
 
 func NewFlower(x, y int, sprite string, world *World) *Flower {
@@ -35,6 +36,7 @@ func NewFlower(x, y int, sprite string, world *World) *Flower {
 	flower.ThrowingRangeMin = 20
 	flower.ThrowingRangeMax = 50
 	flower.pulse = make(chan *Tick)
+	flower.ambit = make(chan []Fragmenter)
 	return flower
 }
 
@@ -47,6 +49,8 @@ func (flower *Flower) SetX(x int) { flower.X = x }
 func (flower *Flower) SetY(y int) { flower.Y = y }
 func (flower *Flower) SetW(w int) { flower.W = w }
 func (flower *Flower) SetH(h int) { flower.H = h }
+
+func (flower *Flower) Collides() bool { return false }
 
 func (flower *Flower) Alive() bool {
 	return flower.alive
@@ -86,7 +90,6 @@ func (flower *Flower) Evolve(world *World) {
 	}
 	flower.alive = false
 	world.Requests <- &DeleteRequest{Request{obj: flower}}
-	flower.world.Client.Write(NewMessage("delete-flower", flower))
 	flower.world = nil
 }
 
